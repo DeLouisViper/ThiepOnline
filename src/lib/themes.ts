@@ -1,0 +1,403 @@
+// Invitation themes. Each theme = a set of CSS variables + petal/ornament style.
+// All art is original (inline SVG + colour palettes); nothing is copied from third-party templates.
+
+export type ShapeKind = 'petal' | 'leaf' | 'flower' | 'blade' | 'dot' | 'star';
+export type OrnamentKind = 'vine' | 'grass' | 'bloom' | 'lines' | 'sparkle';
+
+export interface PetalSpec {
+  kind: ShapeKind;
+  fill: string;
+  stroke: string;
+}
+
+export interface ThemeDef {
+  id: string;
+  name: string;
+  desc: string;
+  group: 'Mẫu gốc' | 'Theo mẫu tham khảo' | 'Mẫu bổ sung';
+  dark: boolean;
+  vars: Record<string, string>;
+  petals: PetalSpec[]; // random pool (repeat an entry to make it more frequent)
+  ornament: OrnamentKind;
+}
+
+const SCRIPT_ALEX = "'Alex Brush', cursive";
+const SCRIPT_VIBES = "'Great Vibes', cursive";
+const SCRIPT_DANCING = "'Dancing Script', cursive";
+const SERIF_PLAYFAIR = "'Playfair Display', serif";
+const SERIF_CORMORANT = "'Cormorant Garamond', serif";
+
+const BASE: Record<string, string> = {
+  '--cream': '#faf7ef',
+  '--cream-deep': '#f2ecdd',
+  '--sage': '#7c8968',
+  '--sage-dark': '#566148',
+  '--moss': '#a7b596',
+  '--blush': '#e9ddc8',
+  '--gold': '#b99a5c',
+  '--ink': '#3d4232',
+  '--ink-soft': '#6b7160',
+  '--line': 'rgba(124,137,104,0.25)',
+  '--surface': '#ffffff',
+  '--on-strong': '#ffffff',
+  '--fab-bg': 'rgba(255,255,255,0.92)',
+  '--page-bg': 'radial-gradient(ellipse at top, #ffffff 0%, #faf7ef 55%, #f2ecdd 100%)',
+  '--shadow': 'rgba(90,100,70,0.12)',
+  '--gold-line': 'rgba(185,154,92,0.35)',
+  '--radius': '16px',
+  '--radius-lg': '22px',
+  '--map-filter': 'saturate(.85) contrast(1.02)',
+  '--env-1': '#e4e1c9',
+  '--env-2': '#e9ddc8',
+  '--f-script': SCRIPT_ALEX,
+  '--f-display': SERIF_CORMORANT,
+  '--f-body': "'Jost', sans-serif",
+  '--names-size': 'clamp(52px,15vw,76px)',
+  '--gbn-size': '44px',
+  '--sign-size': '30px',
+  '--names-style': 'normal',
+  '--names-tt': 'none',
+  '--names-ls': '0',
+  '--names-lh': '1.15',
+};
+
+const t = (o: Record<string, string>) => ({ ...BASE, ...o });
+
+export const THEMES: Record<string, ThemeDef> = {
+  sage: {
+    id: 'sage',
+    name: 'Sage cổ điển',
+    desc: 'Mẫu gốc: kem, xanh sage, vàng champagne, họa tiết dây lá.',
+    group: 'Mẫu gốc',
+    dark: false,
+    vars: t({}),
+    petals: [
+      { kind: 'petal', fill: '#f1e0cf', stroke: '#d8bfa0' },
+      { kind: 'petal', fill: '#f6ece0', stroke: '#e3d2b4' },
+      { kind: 'leaf', fill: '#a7b596', stroke: '#566148' },
+      { kind: 'leaf', fill: '#7c8968', stroke: '#f2ecdd' },
+      { kind: 'flower', fill: '#f6ece0', stroke: '#b99a5c' },
+    ],
+    ornament: 'vine',
+  },
+
+  'dried-blue': {
+    id: 'dried-blue',
+    name: 'Hoa khô xanh dương',
+    desc: 'Xanh bụi dịu, be kem, cỏ pampas và hoa khô.',
+    group: 'Theo mẫu tham khảo',
+    dark: false,
+    vars: t({
+      '--cream': '#f7f5f0',
+      '--cream-deep': '#ebe6dc',
+      '--sage': '#6d8aa3',
+      '--sage-dark': '#3d5a73',
+      '--moss': '#a8bdcc',
+      '--blush': '#e7dccb',
+      '--gold': '#b79b78',
+      '--ink': '#2f3f4d',
+      '--ink-soft': '#66727c',
+      '--line': 'rgba(109,138,163,0.28)',
+      '--page-bg': 'radial-gradient(ellipse at top, #ffffff 0%, #f7f5f0 55%, #ebe6dc 100%)',
+      '--shadow': 'rgba(61,90,115,0.13)',
+      '--gold-line': 'rgba(183,155,120,0.45)',
+      '--env-1': '#dfe6ea',
+      '--env-2': '#e7dccb',
+      '--f-script': SCRIPT_VIBES,
+      '--names-size': 'clamp(52px,15vw,78px)',
+    }),
+    petals: [
+      { kind: 'blade', fill: '#cdb994', stroke: '#b79b78' },
+      { kind: 'blade', fill: '#b79b78', stroke: '#8f7757' },
+      { kind: 'dot', fill: '#a8bdcc', stroke: '#6d8aa3' },
+      { kind: 'leaf', fill: '#8da6ba', stroke: '#3d5a73' },
+      { kind: 'flower', fill: '#efe6d6', stroke: '#b79b78' },
+    ],
+    ornament: 'grass',
+  },
+
+  'minimal-green': {
+    id: 'minimal-green',
+    name: 'Minimalism xanh',
+    desc: 'Trắng tinh, xanh lá tươi, chữ serif thanh mảnh, góc vuông.',
+    group: 'Theo mẫu tham khảo',
+    dark: false,
+    vars: t({
+      '--cream': '#fcfdfb',
+      '--cream-deep': '#eef3ee',
+      '--sage': '#5f8a6f',
+      '--sage-dark': '#2f5a45',
+      '--moss': '#b3cdb9',
+      '--blush': '#e6efe6',
+      '--gold': '#a8935a',
+      '--ink': '#25342b',
+      '--ink-soft': '#667267',
+      '--line': 'rgba(95,138,111,0.25)',
+      '--page-bg': 'linear-gradient(180deg, #ffffff 0%, #f3f7f3 100%)',
+      '--shadow': 'rgba(47,90,69,0.10)',
+      '--gold-line': 'rgba(168,147,90,0.40)',
+      '--radius': '6px',
+      '--radius-lg': '8px',
+      '--env-1': '#e3ece4',
+      '--env-2': '#cfe0d3',
+      '--f-script': SERIF_PLAYFAIR,
+      '--f-display': SERIF_PLAYFAIR,
+      '--names-size': 'clamp(38px,11vw,56px)',
+      '--gbn-size': '30px',
+      '--sign-size': '26px',
+      '--names-style': 'italic',
+      '--names-lh': '1.25',
+    }),
+    petals: [
+      { kind: 'leaf', fill: '#b3cdb9', stroke: '#2f5a45' },
+      { kind: 'leaf', fill: '#8fb39a', stroke: '#2f5a45' },
+      { kind: 'blade', fill: '#a8c4af', stroke: '#5f8a6f' },
+      { kind: 'dot', fill: '#dfeadf', stroke: '#8fb39a' },
+    ],
+    ornament: 'lines',
+  },
+
+  magnolia: {
+    id: 'magnolia',
+    name: 'Mai lan trắng',
+    desc: 'Trắng ngà, hồng mauve nhẹ, cánh mộc lan rơi.',
+    group: 'Theo mẫu tham khảo',
+    dark: false,
+    vars: t({
+      '--cream': '#fffdfa',
+      '--cream-deep': '#f6efe9',
+      '--sage': '#a88d96',
+      '--sage-dark': '#6b4f5a',
+      '--moss': '#e3cfd4',
+      '--blush': '#f3e6e6',
+      '--gold': '#c4a57b',
+      '--ink': '#4a3b41',
+      '--ink-soft': '#85747a',
+      '--line': 'rgba(168,141,150,0.28)',
+      '--page-bg': 'radial-gradient(ellipse at top, #ffffff 0%, #fffdfa 55%, #f6efe9 100%)',
+      '--shadow': 'rgba(107,79,90,0.11)',
+      '--gold-line': 'rgba(196,165,123,0.45)',
+      '--radius': '20px',
+      '--env-1': '#f1e4e4',
+      '--env-2': '#f3e6e6',
+      '--f-script': SCRIPT_VIBES,
+      '--names-size': 'clamp(50px,14vw,72px)',
+    }),
+    petals: [
+      { kind: 'petal', fill: '#ffffff', stroke: '#e6cdd2' },
+      { kind: 'petal', fill: '#fbeff0', stroke: '#e6cdd2' },
+      { kind: 'petal', fill: '#f3dde0', stroke: '#d9b8be' },
+      { kind: 'leaf', fill: '#a9bba9', stroke: '#6f8a73' },
+    ],
+    ornament: 'bloom',
+  },
+
+  'spring-garden': {
+    id: 'spring-garden',
+    name: 'Vườn xuân lam',
+    desc: 'Xanh ngọc mát, hồng đào nhẹ, vàng nắng — dịu mát như khu vườn.',
+    group: 'Theo mẫu tham khảo',
+    dark: false,
+    vars: t({
+      '--cream': '#f4f9f8',
+      '--cream-deep': '#e4f0ee',
+      '--sage': '#5a9aa6',
+      '--sage-dark': '#2c5963',
+      '--moss': '#b5dad8',
+      '--blush': '#f4e9d9',
+      '--gold': '#d1a45a',
+      '--ink': '#2a4047',
+      '--ink-soft': '#62787d',
+      '--line': 'rgba(90,154,166,0.28)',
+      '--page-bg': 'radial-gradient(ellipse at top, #ffffff 0%, #f4f9f8 55%, #e4f0ee 100%)',
+      '--shadow': 'rgba(44,89,99,0.12)',
+      '--gold-line': 'rgba(209,164,90,0.42)',
+      '--env-1': '#d9ecea',
+      '--env-2': '#f4e9d9',
+    }),
+    petals: [
+      { kind: 'petal', fill: '#f7dfe4', stroke: '#e5b9c3' },
+      { kind: 'petal', fill: '#ffffff', stroke: '#cfe3e3' },
+      { kind: 'leaf', fill: '#9fd0c8', stroke: '#2c5963' },
+      { kind: 'flower', fill: '#b5dad8', stroke: '#d1a45a' },
+      { kind: 'leaf', fill: '#7fb8b4', stroke: '#2c5963' },
+    ],
+    ornament: 'vine',
+  },
+
+  navy: {
+    id: 'navy',
+    name: 'Minimalism lam đậm',
+    desc: 'Nền xanh navy, chữ kem, ánh vàng — sang trọng, tối giản.',
+    group: 'Theo mẫu tham khảo',
+    dark: true,
+    vars: t({
+      '--cream': '#14203a',
+      '--cream-deep': '#1b2a4a',
+      '--sage': '#9db3d9',
+      '--sage-dark': '#eadfc4',
+      '--moss': '#4a5f8c',
+      '--blush': '#223356',
+      '--gold': '#d1ad63',
+      '--ink': '#ebe6d8',
+      '--ink-soft': '#aeb8cf',
+      '--line': 'rgba(157,179,217,0.25)',
+      '--surface': '#1b2a4b',
+      '--on-strong': '#14203a',
+      '--fab-bg': 'rgba(27,42,75,0.92)',
+      '--page-bg': 'radial-gradient(ellipse at top, #1b2a4a 0%, #0f182c 60%, #0a1120 100%)',
+      '--shadow': 'rgba(0,0,0,0.35)',
+      '--gold-line': 'rgba(209,173,99,0.45)',
+      '--radius': '8px',
+      '--radius-lg': '10px',
+      '--map-filter': 'brightness(.82) contrast(1.05) saturate(.7)',
+      '--env-1': '#25365e',
+      '--env-2': '#1e2d52',
+      '--f-script': SERIF_PLAYFAIR,
+      '--f-display': SERIF_PLAYFAIR,
+      '--names-size': 'clamp(32px,9.5vw,48px)',
+      '--gbn-size': '26px',
+      '--sign-size': '24px',
+      '--names-tt': 'uppercase',
+      '--names-ls': '0.12em',
+      '--names-lh': '1.4',
+    }),
+    petals: [
+      { kind: 'star', fill: '#d1ad63', stroke: '#d1ad63' },
+      { kind: 'star', fill: '#eadfc4', stroke: '#eadfc4' },
+      { kind: 'petal', fill: '#c9d6ee', stroke: '#9db3d9' },
+      { kind: 'dot', fill: '#d1ad63', stroke: '#d1ad63' },
+    ],
+    ornament: 'lines',
+  },
+
+  rose: {
+    id: 'rose',
+    name: 'Hồng phấn',
+    desc: 'Hồng dusty rose, kem ấm, cánh hoa hồng rơi nhẹ nhàng.',
+    group: 'Mẫu bổ sung',
+    dark: false,
+    vars: t({
+      '--cream': '#fff9f7',
+      '--cream-deep': '#f9ece8',
+      '--sage': '#c08a96',
+      '--sage-dark': '#8a4d5d',
+      '--moss': '#ecc9cf',
+      '--blush': '#f6e1e0',
+      '--gold': '#c8a374',
+      '--ink': '#4b3a3d',
+      '--ink-soft': '#8a7478',
+      '--line': 'rgba(192,138,150,0.28)',
+      '--page-bg': 'radial-gradient(ellipse at top, #ffffff 0%, #fff9f7 55%, #f9ece8 100%)',
+      '--shadow': 'rgba(138,77,93,0.12)',
+      '--gold-line': 'rgba(200,163,116,0.45)',
+      '--radius': '22px',
+      '--radius-lg': '26px',
+      '--env-1': '#f7e3e2',
+      '--env-2': '#f6e1e0',
+      '--f-script': SCRIPT_DANCING,
+      '--names-size': 'clamp(46px,13.5vw,68px)',
+      '--gbn-size': '40px',
+    }),
+    petals: [
+      { kind: 'petal', fill: '#f2c4cd', stroke: '#d9919f' },
+      { kind: 'petal', fill: '#f8dde2', stroke: '#e5b0bb' },
+      { kind: 'petal', fill: '#e8a3b2', stroke: '#c8788a' },
+      { kind: 'flower', fill: '#fdeef0', stroke: '#c8a374' },
+      { kind: 'leaf', fill: '#b9c7a8', stroke: '#6f8a5a' },
+    ],
+    ornament: 'bloom',
+  },
+
+  boho: {
+    id: 'boho',
+    name: 'Boho đất nung',
+    desc: 'Terracotta, cát ấm, cỏ khô — phong cách boho ấm áp.',
+    group: 'Mẫu bổ sung',
+    dark: false,
+    vars: t({
+      '--cream': '#fbf5ec',
+      '--cream-deep': '#f1e5d3',
+      '--sage': '#b9774f',
+      '--sage-dark': '#7a4430',
+      '--moss': '#dcb99a',
+      '--blush': '#efdcc3',
+      '--gold': '#b88a3e',
+      '--ink': '#43332a',
+      '--ink-soft': '#7d6a5d',
+      '--line': 'rgba(185,119,79,0.28)',
+      '--page-bg': 'radial-gradient(ellipse at top, #fffaf2 0%, #fbf5ec 55%, #f1e5d3 100%)',
+      '--shadow': 'rgba(122,68,48,0.13)',
+      '--gold-line': 'rgba(184,138,62,0.42)',
+      '--radius': '12px',
+      '--radius-lg': '16px',
+      '--env-1': '#ecd7bd',
+      '--env-2': '#efdcc3',
+      '--f-script': SERIF_CORMORANT,
+      '--f-display': SERIF_CORMORANT,
+      '--names-size': 'clamp(46px,13vw,66px)',
+      '--gbn-size': '38px',
+      '--sign-size': '30px',
+      '--names-style': 'italic',
+      '--names-lh': '1.1',
+    }),
+    petals: [
+      { kind: 'blade', fill: '#c9a56a', stroke: '#b88a3e' },
+      { kind: 'blade', fill: '#b9774f', stroke: '#7a4430' },
+      { kind: 'dot', fill: '#8a6a4f', stroke: '#7a4430' },
+      { kind: 'leaf', fill: '#8f9467', stroke: '#5e6340' },
+      { kind: 'flower', fill: '#efdcc3', stroke: '#b9774f' },
+    ],
+    ornament: 'grass',
+  },
+
+  royal: {
+    id: 'royal',
+    name: 'Đỏ rượu & vàng',
+    desc: 'Nền đỏ rượu vang sẫm, chữ vàng ánh kim — sang trọng, ấm áp.',
+    group: 'Mẫu bổ sung',
+    dark: true,
+    vars: t({
+      '--cream': '#2a0f18',
+      '--cream-deep': '#34131f',
+      '--sage': '#d4b06a',
+      '--sage-dark': '#f0dca8',
+      '--moss': '#7a2c3f',
+      '--blush': '#3f1a27',
+      '--gold': '#d4af61',
+      '--ink': '#f3e8dc',
+      '--ink-soft': '#cdb8b5',
+      '--line': 'rgba(212,176,106,0.28)',
+      '--surface': '#361823',
+      '--on-strong': '#2a0f18',
+      '--fab-bg': 'rgba(54,24,35,0.92)',
+      '--page-bg': 'radial-gradient(ellipse at top, #3a1522 0%, #1f0a11 60%, #160509 100%)',
+      '--shadow': 'rgba(0,0,0,0.4)',
+      '--gold-line': 'rgba(212,176,106,0.5)',
+      '--radius': '10px',
+      '--radius-lg': '14px',
+      '--map-filter': 'brightness(.8) contrast(1.05) saturate(.65) sepia(.2)',
+      '--env-1': '#4a1a2a',
+      '--env-2': '#3b1421',
+      '--f-script': SCRIPT_VIBES,
+      '--names-size': 'clamp(50px,14vw,72px)',
+    }),
+    petals: [
+      { kind: 'star', fill: '#d4af61', stroke: '#d4af61' },
+      { kind: 'petal', fill: '#a33a52', stroke: '#6f2236' },
+      { kind: 'petal', fill: '#c4566d', stroke: '#8a2e44' },
+      { kind: 'dot', fill: '#f0dca8', stroke: '#d4af61' },
+    ],
+    ornament: 'sparkle',
+  },
+};
+
+export const THEME_ORDER = ['sage', 'dried-blue', 'minimal-green', 'magnolia', 'spring-garden', 'navy', 'rose', 'boho', 'royal'];
+export const DEFAULT_THEME = 'sage';
+
+export function isThemeId(id: unknown): id is string {
+  return typeof id === 'string' && Object.prototype.hasOwnProperty.call(THEMES, id);
+}
+export function getTheme(id: string | null | undefined): ThemeDef {
+  return isThemeId(id) ? THEMES[id] : THEMES[DEFAULT_THEME];
+}
