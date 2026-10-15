@@ -441,6 +441,197 @@ function RoyalScene() {
   return { top, bottom };
 }
 
+
+function Lavender({ p0, p1, p2, bud, bud2, stem = '#7f9a6a' }: { p0: P; p1: P; p2: P; bud: string; bud2: string; stem?: string }) {
+  const els: ReactNode[] = [];
+  for (let i = 0; i < 12; i++) {
+    const t = 0.38 + (i / 12) * 0.62;
+    const pt = bez(p0, p1, p2, t);
+    const a = ang(p0, p1, p2, t);
+    const k = 1 - (t - 0.4) * 0.55;
+    [-1, 1].forEach((sd) =>
+      els.push(<ellipse key={`${i}${sd}`} cx={pt[0]} cy={pt[1]} rx={2.6 * k} ry={6 * k} fill={(i + sd) % 2 ? bud : bud2} transform={`rotate(${a + 90 + sd * 32} ${pt[0]} ${pt[1]})`} />),
+    );
+  }
+  const e = bez(p0, p1, p2, 1);
+  els.push(<ellipse key="tip" cx={e[0]} cy={e[1]} rx="2.2" ry="5" fill={bud} transform={`rotate(${ang(p0, p1, p2, 1) + 90} ${e[0]} ${e[1]})`} />);
+  return (
+    <g>
+      <path d={`M${p0[0]} ${p0[1]} Q ${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]}`} fill="none" stroke={stem} strokeWidth="1.2" />
+      {els}
+    </g>
+  );
+}
+
+function Sunflower({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {Array.from({ length: 16 }, (_, i) => (
+        <ellipse key={i} cx="0" cy="-17" rx="4.6" ry="10" fill={i % 2 ? '#f6c744' : '#f2b72a'} transform={`rotate(${(360 / 16) * i})`} />
+      ))}
+      <circle r="11" fill="#6b4318" />
+      <circle r="7" fill="#8a5a22" />
+      {[[-3, -3], [3, -2], [0, 3], [-4, 3], [4, 4], [0, -6]].map(([a, b], i) => (
+        <circle key={i} cx={a} cy={b} r=".9" fill="#d9a85a" />
+      ))}
+    </g>
+  );
+}
+
+function SunflowerScene() {
+  const L = '#7a9a4a';
+  const corner = (
+    <g>
+      <Branch p0={[-6, 30]} p1={[70, 20]} p2={[150, 96]} n={4} size={1.2} fill="#8fae56" fill2={L} stroke="#5f7a34" />
+      <Sunflower x={58} y={70} s={1.5} />
+      <Sunflower x={130} y={34} s={0.85} />
+      <Sunflower x={22} y={150} s={0.7} />
+    </g>
+  );
+  const small = (
+    <g>
+      <Branch p0={[-6, 12]} p1={[50, 16]} p2={[112, 66]} n={3} size={1} fill="#8fae56" fill2={L} stroke="#5f7a34" />
+      <Sunflower x={50} y={48} s={1.05} />
+    </g>
+  );
+  return { top: <>{corner}{mirror(small)}</>, bottom: <>{rot180(small)}{mirror(rot180(corner))}</> };
+}
+
+function LavenderScene() {
+  const set = (
+    <g>
+      <Lavender p0={[10, -6]} p1={[22, 60]} p2={[60, 128]} bud="#b8a3d8" bud2="#8a73ad" />
+      <Lavender p0={[34, -6]} p1={[70, 40]} p2={[118, 84]} bud="#cbbde3" bud2="#9d86c4" />
+      <Lavender p0={[-6, 20]} p1={[8, 90]} p2={[24, 170]} bud="#9d86c4" bud2="#cbbde3" />
+      <Leaf x={20} y={14} r={150} s={0.8} fill="#a9b894" />
+      <Leaf x={46} y={8} r={130} s={0.7} fill="#c2cdb2" />
+    </g>
+  );
+  const up = (
+    <g>
+      <Lavender p0={[16, 266]} p1={[26, 200]} p2={[58, 140]} bud="#b8a3d8" bud2="#8a73ad" />
+      <Lavender p0={[40, 266]} p1={[74, 220]} p2={[116, 184]} bud="#cbbde3" bud2="#9d86c4" />
+      <Lavender p0={[-4, 266]} p1={[6, 210]} p2={[18, 156]} bud="#9d86c4" bud2="#cbbde3" />
+    </g>
+  );
+  return { top: <>{set}{mirror(set)}</>, bottom: <>{up}{mirror(up)}</> };
+}
+
+function PeonyScene() {
+  const C = { base: '#f8c9bd', mid: '#ef9d8c', edge: '#c9655a' };
+  const corner = (
+    <g>
+      <Branch p0={[-6, 28]} p1={[60, 22]} p2={[148, 100]} n={5} size={1.1} fill="#a9bf96" fill2="#7f9a6c" stroke="#6f8a5a" />
+      <Rose x={64} y={72} s={1.8} {...C} />
+      <Rose x={138} y={40} s={1.1} base="#fde5dc" mid="#f8c9bd" edge="#d9867a" />
+      <Blossom x={30} y={150} s={1.1} petal="#fde5dc" center="#c9a26a" />
+      <Blossom x={104} y={128} s={0.8} petal="#f8c9bd" center="#c9a26a" />
+    </g>
+  );
+  const small = (
+    <g>
+      <Branch p0={[-6, 10]} p1={[50, 16]} p2={[110, 70]} n={4} size={0.9} fill="#a9bf96" fill2="#7f9a6c" stroke="#6f8a5a" />
+      <Rose x={46} y={48} s={1.25} base="#fde5dc" mid="#f8c9bd" edge="#d9867a" />
+    </g>
+  );
+  return { top: <>{corner}{mirror(small)}</>, bottom: <>{rot180(small)}{mirror(rot180(corner))}</> };
+}
+
+function ForestScene() {
+  const fern = (
+    <g>
+      <Branch p0={[-6, -4]} p1={[110, 10]} p2={[190, 110]} n={13} size={0.8} spread={70} fill="#3f6b57" fill2="#5f8f73" stroke="#9cc2a5" sw={1} />
+      <Branch p0={[-4, 10]} p1={[26, 80]} p2={[64, 170]} n={9} size={0.75} spread={70} fill="#4c7d65" fill2="#2f5645" stroke="#9cc2a5" sw={1} />
+      <Branch p0={[30, -4]} p1={[80, 20]} p2={[120, 60]} n={6} size={0.6} spread={72} fill="#5f8f73" fill2="#3f6b57" stroke="#9cc2a5" sw={1} />
+    </g>
+  );
+  const fly = [[60, 120], [150, 70], [210, 120], [300, 80], [110, 190], [340, 150]] as P[];
+  return {
+    top: <>{fern}{mirror(fern)}{fly.map(([x, y], i) => <circle key={i} cx={x} cy={y} r={i % 2 ? 1.6 : 2.2} fill="#e6c76e" opacity=".8" />)}</>,
+    bottom: <>{rot180(fern)}{mirror(rot180(fern))}</>,
+  };
+}
+
+function VintageScene() {
+  const C = '#8b6a4a';
+  const corner = (
+    <g stroke={C} fill="none" strokeWidth="1.1" strokeLinecap="round">
+      <path d="M8 90 V8 H90" />
+      <path d="M18 70 V18 H70" opacity=".6" />
+      <path d="M26 26 C 56 26, 60 60, 40 62 C 26 63, 24 46, 38 46" />
+      <path d="M26 26 C 26 56, 60 60, 62 40 C 63 26, 46 24, 46 38" opacity=".7" />
+      <circle cx="8" cy="8" r="3" fill={C} stroke="none" />
+      <path d="M70 40 C 84 36, 96 44, 100 56 C 88 58, 74 54, 70 40Z" />
+      <path d="M40 70 C 36 84, 44 96, 56 100 C 58 88, 54 74, 40 70Z" />
+    </g>
+  );
+  const seal = (
+    <g transform="translate(200 40)" stroke={C} fill="none" strokeWidth="1">
+      <circle r="16" />
+      <circle r="12" opacity=".6" />
+      <path d="M-6 3 C -6 -6, 0 -8, 0 -2 C 0 -8, 6 -6, 6 3 C 6 8, 0 11, 0 11 C 0 11, -6 8, -6 3Z" fill={C} opacity=".55" stroke="none" />
+    </g>
+  );
+  return { top: <>{corner}{mirror(corner)}{seal}</>, bottom: <>{rot180(corner)}{mirror(rot180(corner))}</> };
+}
+
+function OceanScene() {
+  const wave = (y: number, c: string, o: number, amp = 14) => (
+    <path d={`M0 ${y} Q 50 ${y - amp} 100 ${y} T 200 ${y} T 300 ${y} T 400 ${y} V0 H0Z`} fill={c} opacity={o} />
+  );
+  const shell = (
+    <g transform="translate(300 40)">
+      {[-50, -30, -10, 10, 30, 50].map((a) => (
+        <path key={a} d="M0 0 L0 -26" stroke="#d0a35c" strokeWidth="1" transform={`rotate(${a})`} />
+      ))}
+      <path d="M-24 -16 Q 0 -40 24 -16 Q 0 -4 -24 -16Z" fill="#f6ecd9" stroke="#d0a35c" strokeWidth="1" opacity=".9" />
+      <path d="M0 0 L-8 10 H8Z" fill="#f6ecd9" stroke="#d0a35c" strokeWidth="1" />
+    </g>
+  );
+  const top = (
+    <>
+      {wave(46, '#a9d6e0', 0.55, 16)}
+      {wave(32, '#6fb4c6', 0.55, 14)}
+      {wave(18, '#3d8fa6', 0.6, 10)}
+      <g transform="translate(64 90)">
+        {[0, 72, 144, 216, 288].map((a) => (
+          <path key={a} d="M0 0 L-4 -20 L0 -26 L4 -20Z" fill="#f2c6a0" stroke="#d99a6c" strokeWidth=".8" transform={`rotate(${a})`} />
+        ))}
+      </g>
+      {shell}
+    </>
+  );
+  const bottom = (
+    <g transform="translate(0 260) scale(1 -1)">
+      {wave(46, '#a9d6e0', 0.55, 16)}
+      {wave(32, '#6fb4c6', 0.55, 14)}
+      {wave(18, '#3d8fa6', 0.6, 10)}
+    </g>
+  );
+  return { top, bottom };
+}
+
+function NoirScene() {
+  const G = '#d4b56a';
+  const corner = (
+    <g fill="none" stroke={G} strokeWidth=".9">
+      {[28, 46, 64, 82, 100].map((r, i) => (
+        <path key={r} d={`M0 ${r} A${r} ${r} 0 0 0 ${r} 0`} opacity={1 - i * 0.14} />
+      ))}
+      <path d="M0 0 L110 110" opacity=".35" />
+      <circle cx="0" cy="0" r="4" fill={G} stroke="none" />
+    </g>
+  );
+  const bar = (
+    <g stroke={G} strokeWidth=".8" opacity=".7">
+      <path d="M150 30 H250" />
+      <path d="M170 38 H230" />
+      <rect x="196" y="12" width="8" height="8" transform="rotate(45 200 16)" fill="none" />
+    </g>
+  );
+  return { top: <>{corner}{mirror(corner)}{bar}</>, bottom: <>{rot180(corner)}{mirror(rot180(corner))}</> };
+}
+
 const SCENES: Record<SceneKind, () => { top: ReactNode; bottom: ReactNode }> = {
   sage: SageScene,
   'dried-blue': DriedBlueScene,
@@ -451,6 +642,13 @@ const SCENES: Record<SceneKind, () => { top: ReactNode; bottom: ReactNode }> = {
   rose: RoseScene,
   boho: BohoScene,
   royal: RoyalScene,
+  sunflower: SunflowerScene,
+  lavender: LavenderScene,
+  peony: PeonyScene,
+  forest: ForestScene,
+  vintage: VintageScene,
+  ocean: OceanScene,
+  noir: NoirScene,
 };
 
 /** Top + bottom artwork for the hero (and the footer). Pure decoration → aria-hidden. */
@@ -475,7 +673,7 @@ export function Band() {
       <svg viewBox="0 0 220 24" fill="none">
         <path d="M10 12 H88" stroke={g} strokeWidth=".8" opacity=".7" />
         <path d="M132 12 H210" stroke={g} strokeWidth=".8" opacity=".7" />
-        {(k === 'sage' || k === 'spring') && (
+        {(k === 'sage' || k === 'spring' || k === 'forest' || k === 'lavender') && (
           <>
             <Leaf x={100} y={14} r={-60} s={0.45} fill="var(--moss)" />
             <Leaf x={120} y={14} r={60} s={0.45} fill="var(--moss)" />
@@ -490,12 +688,12 @@ export function Band() {
             <circle cx="110" cy="12" r="2" fill={s} />
           </>
         )}
-        {k === 'minimal-green' && (
+        {(k === 'minimal-green' || k === 'vintage') && (
           <>
             <rect x="106" y="8" width="8" height="8" transform="rotate(45 110 12)" stroke={s} strokeWidth="1" />
           </>
         )}
-        {(k === 'magnolia' || k === 'rose') && (
+        {(k === 'magnolia' || k === 'rose' || k === 'peony' || k === 'sunflower') && (
           <>
             {[0, 72, 144, 216, 288].map((a) => (
               <ellipse key={a} cx="110" cy="5" rx="3" ry="5.5" fill="var(--blush)" stroke={s} strokeWidth=".7" transform={`rotate(${a} 110 12)`} />
@@ -503,7 +701,7 @@ export function Band() {
             <circle cx="110" cy="12" r="2" fill={g} />
           </>
         )}
-        {(k === 'navy' || k === 'royal') && (
+        {(k === 'navy' || k === 'royal' || k === 'noir' || k === 'ocean') && (
           <>
             <Sparkle x={110} y={12} s={0.95} fill={g} />
             <Sparkle x={94} y={12} s={0.4} fill={g} />

@@ -79,7 +79,7 @@ Buy a domain anywhere, add a `public/CNAME` file containing just the domain (e.g
 
 | Tab | What you can do |
 |---|---|
-| Nội dung & giao diện | Pick one of 9 themes (with live "Xem thử") and edit names, both families, date/time, lunar date, venue, map, timeline and closing text — no code needed; reuse the site for another couple |
+| Nội dung & giao diện | Pick one of 16 themes (with live "Xem thử") and edit names, both families, date/time, lunar date, venue, map, timeline and closing text — no code needed; reuse the site for another couple |
 | Tổng quan | Totals (all / approved / pending / hidden), album and guest-photo counts, latest wishes |
 | Lời chúc | Search, filter by status, sort, read in full, approve / hide / delete (with confirmation), export CSV (UTF-8 with BOM, opens correctly in Excel) |
 | Ảnh | Upload several photos with preview and captions, replace, reorder (↑ ↓), delete. Images are resized in the browser (max 1600 px) |
@@ -92,7 +92,7 @@ Public pages pick up changes on next load (settings refresh every minute while a
 ---
 
 ### Themes (Mẫu giao diện)
-Admin → **Nội dung & giao diện** → *Mẫu giao diện*. Nine built-in styles: Sage cổ điển (original), Hoa khô xanh dương, Minimalism xanh, Mai lan trắng, Vườn xuân lam, Minimalism lam đậm (dark), Hồng phấn, Boho đất nung, Đỏ rượu & vàng (dark). A theme changes colours, fonts, background pattern, frame, hero/footer illustrations (`src/components/Scene.tsx`), section dividers, falling-petal shapes and card style. You can also upload your own **Ảnh nền đầu thiệp** (hero background photo) in the same tab. **Xem thử** opens `#/?theme=<id>` so you can look before saving. To add your own theme, copy one entry in `src/lib/themes.ts` (colours are plain CSS variables) and add its id to `THEME_ORDER`.
+Admin → **Nội dung & giao diện** → *Mẫu giao diện*. Sixteen built-in styles (nine originals plus Lavender, Hướng dương, Đào san hô, Rừng xanh, Cổ điển sepia, Biển xanh, Đen vàng); the first nine are: Sage cổ điển (original), Hoa khô xanh dương, Minimalism xanh, Mai lan trắng, Vườn xuân lam, Minimalism lam đậm (dark), Hồng phấn, Boho đất nung, Đỏ rượu & vàng (dark). A theme changes colours, fonts, background pattern, frame, hero/footer illustrations (`src/components/Scene.tsx`), section dividers, falling-petal shapes and card style. You can also upload your own **Ảnh nền đầu thiệp** (hero background photo) in the same tab. **Xem thử** opens `#/?theme=<id>` so you can look before saving. To add your own theme, copy one entry in `src/lib/themes.ts` (colours are plain CSS variables) and add its id to `THEME_ORDER`.
 
 ## 6. How security works
 
