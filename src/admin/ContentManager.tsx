@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import { supabase } from '../lib/supabase';
+import { BUCKET_MEDIA, publicUrl, supabase } from '../lib/supabase';
+import { processImage, validateImage } from '../lib/image';
 import {
   CONTENT_LIMITS,
   DEFAULT_CONTENT,
@@ -98,6 +99,7 @@ export function ContentManager() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<Msg>(null);
   const [loadErr, setLoadErr] = useState<string | null>(null);
+  const [bgBusy, setBgBusy] = useState(false);
 
   useEffect(() => {
     if (!supabase) return;
@@ -116,6 +118,26 @@ export function ContentManager() {
         }
       });
   }, []);
+
+  const pickBg = async (file: File | null) => {
+    if (!file || !supabase || !form) return;
+    const bad = validateImage(file, 10 * 1048576);
+    if (bad) return setMsg({ ok: false, text: bad });
+    setBgBusy(true);
+    setMsg(null);
+    try {
+      const img = await processImage(file, { maxSide: 1600, quality: 0.82 });
+      const path = `bg/hero-${Date.now()}.${img.ext}`;
+      const up = await supabase.storage.from(BUCKET_MEDIA).upload(path, img.blob, { contentType: img.contentType, upsert: false });
+      if (up.error) throw up.error;
+      setForm({ ...form, heroImage: path });
+      setMsg({ ok: true, text: 'Đã tải ảnh nền lên. Bấm "Lưu nội dung" ở cuối trang để áp dụng.' });
+    } catch (e) {
+      console.error(e);
+      setMsg({ ok: false, text: 'Không tải được ảnh nền. Hãy thử ảnh khác.' });
+    }
+    setBgBusy(false);
+  };
 
   if (loadErr) return <div className="msg err">{loadErr}</div>;
   if (!form) return <div>Đang tải…</div>;
@@ -180,6 +202,25 @@ export function ContentManager() {
       </div>
 
       <ThemePicker value={form.theme} onChange={(id) => set('theme', id)} />
+
+      <div className="adm-card">
+        <h2>Ảnh nền đầu thiệp (tùy chọn)</h2>
+        <div className="hint" style={{ marginBottom: 10 }}>
+          Dùng ảnh cưới của hai bạn làm nền trang đầu (phủ lớp màu mờ để chữ vẫn dễ đọc, hình trang trí của mẫu vẫn hiện). Nên dùng ảnh dọc, rõ nét. Sau khi chọn ảnh, bấm <b>Lưu nội dung</b> để áp dụng.
+        </div>
+        <div className="row">
+          <div className="qr-prev" style={{ width: 120, height: 180 }}>
+            {form.heroImage ? <img src={publicUrl(BUCKET_MEDIA, form.heroImage) ?? ''} alt="Ảnh nền hiện tại" style={{ objectFit: 'cover' }} /> : 'Chưa có ảnh'}
+          </div>
+          <div className="adm-form">
+            <label className="btn">
+              {bgBusy ? 'Đang tải ảnh…' : form.heroImage ? 'Đổi ảnh nền…' : 'Chọn ảnh nền…'}
+              <input type="file" accept="image/jpeg,image/png,image/webp" hidden disabled={bgBusy} onChange={(e) => { void pickBg(e.target.files?.[0] ?? null); e.target.value = ''; }} />
+            </label>
+            {form.heroImage && <button type="button" className="btn danger sm" onClick={() => set('heroImage', '')}>Bỏ ảnh nền</button>}
+          </div>
+        </div>
+      </div>
 
       <div className="adm-card">
         <h2>Cô dâu & chú rể</h2>

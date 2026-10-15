@@ -2,6 +2,7 @@
 // All art is original (inline SVG + colour palettes); nothing is copied from third-party templates.
 
 export type ShapeKind = 'petal' | 'leaf' | 'flower' | 'blade' | 'dot' | 'star';
+export type SceneKind = 'sage' | 'dried-blue' | 'minimal-green' | 'magnolia' | 'spring' | 'navy' | 'rose' | 'boho' | 'royal';
 export type OrnamentKind = 'vine' | 'grass' | 'bloom' | 'lines' | 'sparkle';
 
 export interface PetalSpec {
@@ -19,6 +20,7 @@ export interface ThemeDef {
   vars: Record<string, string>;
   petals: PetalSpec[]; // random pool (repeat an entry to make it more frequent)
   ornament: OrnamentKind;
+  scene: SceneKind; // hero/footer artwork + section dividers (src/components/Scene.tsx)
 }
 
 const SCRIPT_ALEX = "'Alex Brush', cursive";
@@ -59,6 +61,13 @@ const BASE: Record<string, string> = {
   '--names-tt': 'none',
   '--names-ls': '0',
   '--names-lh': '1.15',
+  '--card-bg': 'var(--cream)',
+  '--sec-alt': 'transparent',
+  '--frame-border': '0',
+  '--frame2-border': '0',
+  '--frame-inset': '14px',
+  '--frame2-inset': '20px',
+  '--frame-radius': '0',
 };
 
 const t = (o: Record<string, string>) => ({ ...BASE, ...o });
@@ -70,7 +79,9 @@ export const THEMES: Record<string, ThemeDef> = {
     desc: 'Mẫu gốc: kem, xanh sage, vàng champagne, họa tiết dây lá.',
     group: 'Mẫu gốc',
     dark: false,
-    vars: t({}),
+    vars: t({
+      '--sec-alt': "rgba(231,225,201,.28)",
+      '--frame-border': "1px solid var(--gold-line)",}),
     petals: [
       { kind: 'petal', fill: '#f1e0cf', stroke: '#d8bfa0' },
       { kind: 'petal', fill: '#f6ece0', stroke: '#e3d2b4' },
@@ -79,6 +90,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'flower', fill: '#f6ece0', stroke: '#b99a5c' },
     ],
     ornament: 'vine',
+    scene: 'sage',
   },
 
   'dried-blue': {
@@ -88,6 +100,8 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Theo mẫu tham khảo',
     dark: false,
     vars: t({
+      '--card-bg': "linear-gradient(180deg,#f7f5f0 0%,#f2eee5 100%)",
+      '--sec-alt': "rgba(168,189,204,.13)",
       '--cream': '#f7f5f0',
       '--cream-deep': '#ebe6dc',
       '--sage': '#6d8aa3',
@@ -114,6 +128,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'flower', fill: '#efe6d6', stroke: '#b79b78' },
     ],
     ornament: 'grass',
+    scene: 'dried-blue',
   },
 
   'minimal-green': {
@@ -123,6 +138,12 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Theo mẫu tham khảo',
     dark: false,
     vars: t({
+      '--card-bg': "linear-gradient(rgba(95,138,111,.055) 1px, transparent 1px) 0 0/28px 28px, linear-gradient(90deg, rgba(95,138,111,.055) 1px, transparent 1px) 0 0/28px 28px, #fcfdfb",
+      '--sec-alt': "rgba(238,243,238,.6)",
+      '--frame-border': "1px solid rgba(47,90,69,.45)",
+      '--frame2-border': "1px solid rgba(47,90,69,.18)",
+      '--frame-inset': "18px",
+      '--frame2-inset': "24px",
       '--cream': '#fcfdfb',
       '--cream-deep': '#eef3ee',
       '--sage': '#5f8a6f',
@@ -155,6 +176,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'dot', fill: '#dfeadf', stroke: '#8fb39a' },
     ],
     ornament: 'lines',
+    scene: 'minimal-green',
   },
 
   magnolia: {
@@ -164,6 +186,11 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Theo mẫu tham khảo',
     dark: false,
     vars: t({
+      '--card-bg': "radial-gradient(circle at 12% 6%, rgba(243,221,224,.6), transparent 38%), radial-gradient(circle at 92% 96%, rgba(243,221,224,.55), transparent 38%), #fffdfa",
+      '--sec-alt': "rgba(243,230,230,.35)",
+      '--frame-border': "1px solid var(--gold-line)",
+      '--frame-inset': "22px",
+      '--frame-radius': "170px 170px 16px 16px",
       '--cream': '#fffdfa',
       '--cream-deep': '#f6efe9',
       '--sage': '#a88d96',
@@ -190,6 +217,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'leaf', fill: '#a9bba9', stroke: '#6f8a73' },
     ],
     ornament: 'bloom',
+    scene: 'magnolia',
   },
 
   'spring-garden': {
@@ -199,6 +227,8 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Theo mẫu tham khảo',
     dark: false,
     vars: t({
+      '--card-bg': "linear-gradient(180deg,#f4f9f8 0%,#e9f4f2 55%,#f8f2e6 100%)",
+      '--sec-alt': "rgba(181,218,216,.2)",
       '--cream': '#f4f9f8',
       '--cream-deep': '#e4f0ee',
       '--sage': '#5a9aa6',
@@ -223,6 +253,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'leaf', fill: '#7fb8b4', stroke: '#2c5963' },
     ],
     ornament: 'vine',
+    scene: 'spring',
   },
 
   navy: {
@@ -232,6 +263,10 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Theo mẫu tham khảo',
     dark: true,
     vars: t({
+      '--card-bg': "radial-gradient(1.3px 1.3px at 12% 18%, rgba(234,223,196,.85) 50%, transparent 51%) 0 0/300px 360px, radial-gradient(1px 1px at 64% 42%, rgba(209,173,99,.75) 50%, transparent 51%) 0 0/300px 360px, radial-gradient(1px 1px at 86% 76%, rgba(234,223,196,.65) 50%, transparent 51%) 0 0/300px 360px, radial-gradient(1.2px 1.2px at 38% 88%, rgba(209,173,99,.65) 50%, transparent 51%) 0 0/300px 360px, radial-gradient(0.9px 0.9px at 52% 8%, rgba(234,223,196,.5) 50%, transparent 51%) 0 0/300px 360px, #14203a",
+      '--sec-alt': "rgba(27,42,74,.55)",
+      '--frame-border': "1px solid var(--gold-line)",
+      '--frame2-border': "1px solid rgba(209,173,99,.22)",
       '--cream': '#14203a',
       '--cream-deep': '#1b2a4a',
       '--sage': '#9db3d9',
@@ -269,6 +304,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'dot', fill: '#d1ad63', stroke: '#d1ad63' },
     ],
     ornament: 'lines',
+    scene: 'navy',
   },
 
   rose: {
@@ -278,6 +314,10 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Mẫu bổ sung',
     dark: false,
     vars: t({
+      '--card-bg': "radial-gradient(circle at 90% 8%, rgba(246,225,224,.7), transparent 40%), radial-gradient(circle at 8% 92%, rgba(246,225,224,.7), transparent 40%), #fff9f7",
+      '--sec-alt': "rgba(249,236,232,.5)",
+      '--frame-border': "1px solid var(--gold-line)",
+      '--frame-radius': "28px",
       '--cream': '#fff9f7',
       '--cream-deep': '#f9ece8',
       '--sage': '#c08a96',
@@ -307,6 +347,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'leaf', fill: '#b9c7a8', stroke: '#6f8a5a' },
     ],
     ornament: 'bloom',
+    scene: 'rose',
   },
 
   boho: {
@@ -316,6 +357,10 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Mẫu bổ sung',
     dark: false,
     vars: t({
+      '--card-bg': "radial-gradient(rgba(185,119,79,.10) 1.2px, transparent 1.5px) 0 0/22px 22px, #fbf5ec",
+      '--sec-alt': "rgba(239,220,195,.35)",
+      '--frame-border': "1px dashed rgba(185,119,79,.55)",
+      '--frame-radius': "14px",
       '--cream': '#fbf5ec',
       '--cream-deep': '#f1e5d3',
       '--sage': '#b9774f',
@@ -349,6 +394,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'flower', fill: '#efdcc3', stroke: '#b9774f' },
     ],
     ornament: 'grass',
+    scene: 'boho',
   },
 
   royal: {
@@ -358,6 +404,10 @@ export const THEMES: Record<string, ThemeDef> = {
     group: 'Mẫu bổ sung',
     dark: true,
     vars: t({
+      '--card-bg': "repeating-linear-gradient(45deg, rgba(212,176,106,.05) 0 1px, transparent 1px 14px), repeating-linear-gradient(-45deg, rgba(212,176,106,.05) 0 1px, transparent 1px 14px), #2a0f18",
+      '--sec-alt': "rgba(63,26,39,.55)",
+      '--frame-border': "1px solid var(--gold-line)",
+      '--frame2-border': "1px solid rgba(212,176,106,.25)",
       '--cream': '#2a0f18',
       '--cream-deep': '#34131f',
       '--sage': '#d4b06a',
@@ -389,6 +439,7 @@ export const THEMES: Record<string, ThemeDef> = {
       { kind: 'dot', fill: '#f0dca8', stroke: '#d4af61' },
     ],
     ornament: 'sparkle',
+    scene: 'royal',
   },
 };
 

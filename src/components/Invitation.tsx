@@ -6,6 +6,7 @@ import { mergeContent } from '../lib/content';
 import { DEFAULT_THEME, getTheme, isThemeId } from '../lib/themes';
 import { ThemeCtx } from './ThemeContext';
 import { MusicProvider } from './MusicContext';
+import { Band } from './Scene';
 import { Petals, usePrefersReducedMotion } from './Petals';
 import { FloatingControls } from './FloatingControls';
 import { EventSection, FamilySection, Footer, Hero, MapSection, TimelineSection } from './Sections';
@@ -87,12 +88,19 @@ export function Invitation() {
       <Petals on={petalsAllowed && petalsOn} />
       <div className="card">
         <Hero c={content} />
+        <Band />
         <FamilySection c={content} />
+        <Band />
         <EventSection c={content} />
+        <Band />
         <MapSection c={content} />
+        <Band />
         <TimelineSection c={content} />
+        <Band />
         <GallerySection photos={photos} />
+        <Band />
         <WishesSection settings={settings} />
+        <Band />
         <GiftSection settings={settings} groom={content.groom} bride={content.bride} />
         <Footer c={content} />
       </div>

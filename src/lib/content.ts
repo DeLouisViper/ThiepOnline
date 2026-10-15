@@ -34,6 +34,7 @@ export interface WeddingContent {
   timeline: TimelineItem[];
   thanks: string;
   theme: string; // id from src/lib/themes.ts
+  heroImage: string; // optional background photo, path inside bucket wedding-media ("bg/…")
 }
 
 export const DEFAULT_CONTENT: WeddingContent = {
@@ -74,6 +75,7 @@ export const DEFAULT_CONTENT: WeddingContent = {
   ],
   thanks: 'Sự hiện diện của quý khách\nlà niềm vinh hạnh của gia đình chúng tôi!',
   theme: DEFAULT_THEME,
+  heroImage: '',
 };
 
 export const CONTENT_LIMITS = { short: 80, long: 200, thanks: 400, timeline: 12, url: 500 };
@@ -123,6 +125,7 @@ export function mergeContent(raw: unknown): WeddingContent {
     timeline,
     thanks: str(o.thanks, D.thanks, CONTENT_LIMITS.thanks),
     theme: isThemeId(o.theme) ? o.theme : D.theme,
+    heroImage: typeof o.heroImage === 'string' && /^bg\/[A-Za-z0-9._-]{1,100}$/.test(o.heroImage) ? o.heroImage : '',
   };
 }
 

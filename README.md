@@ -92,7 +92,7 @@ Public pages pick up changes on next load (settings refresh every minute while a
 ---
 
 ### Themes (Mẫu giao diện)
-Admin → **Nội dung & giao diện** → *Mẫu giao diện*. Nine built-in styles: Sage cổ điển (original), Hoa khô xanh dương, Minimalism xanh, Mai lan trắng, Vườn xuân lam, Minimalism lam đậm (dark), Hồng phấn, Boho đất nung, Đỏ rượu & vàng (dark). A theme changes colours, fonts, corner ornaments, falling-petal shapes and card style. **Xem thử** opens `#/?theme=<id>` so you can look before saving. To add your own theme, copy one entry in `src/lib/themes.ts` (colours are plain CSS variables) and add its id to `THEME_ORDER`.
+Admin → **Nội dung & giao diện** → *Mẫu giao diện*. Nine built-in styles: Sage cổ điển (original), Hoa khô xanh dương, Minimalism xanh, Mai lan trắng, Vườn xuân lam, Minimalism lam đậm (dark), Hồng phấn, Boho đất nung, Đỏ rượu & vàng (dark). A theme changes colours, fonts, background pattern, frame, hero/footer illustrations (`src/components/Scene.tsx`), section dividers, falling-petal shapes and card style. You can also upload your own **Ảnh nền đầu thiệp** (hero background photo) in the same tab. **Xem thử** opens `#/?theme=<id>` so you can look before saving. To add your own theme, copy one entry in `src/lib/themes.ts` (colours are plain CSS variables) and add its id to `THEME_ORDER`.
 
 ## 6. How security works
 

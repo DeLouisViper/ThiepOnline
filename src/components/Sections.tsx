@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { deriveEvent, safeHttpUrl, type FamilyInfo, type WeddingContent } from '../lib/content';
 import { Reveal } from './Reveal';
 import { useMusic } from './MusicContext';
-import { Ornament } from './Ornament';
+import { BUCKET_MEDIA, publicUrl } from '../lib/supabase';
+import { Scene } from './Scene';
 
 /* ======================= HERO ======================= */
 export function Hero({ c }: { c: WeddingContent }) {
   const music = useMusic();
   const ev = deriveEvent(c);
+  const bg = publicUrl(BUCKET_MEDIA, c.heroImage);
   const scrollToFamily = () => document.getElementById('family')?.scrollIntoView({ behavior: 'smooth' });
   const withMusic = music.available && !music.preferOff;
 
@@ -18,7 +20,9 @@ export function Hero({ c }: { c: WeddingContent }) {
 
   return (
     <section id="hero">
-      <Ornament className="leaf-corner leaf-tl" />
+      {bg && <div className="hero-photo" style={{ backgroundImage: `url("${bg}")` }} />}
+      <Scene part="top" />
+      <Scene part="bottom" />
       <Reveal immediate className="sub">Trân trọng kính mời</Reveal>
       <Reveal immediate className="names">
         {c.groom}
@@ -266,7 +270,7 @@ export function TimelineSection({ c }: { c: WeddingContent }) {
 export function Footer({ c }: { c: WeddingContent }) {
   return (
     <footer>
-      <Ornament className="leaf-corner" />
+      <Scene part="bottom" />
       <Reveal className="thanks" style={{ whiteSpace: 'pre-line' }}>{c.thanks}</Reveal>
       <Reveal className="sign">
         {c.groom} &amp; {c.bride}
