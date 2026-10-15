@@ -223,11 +223,11 @@ function DriedBlueScene() {
 function MinimalGreenScene() {
   const sprig = (x: number, y: number, flip: number) => (
     <g transform={`translate(${x} ${y}) scale(${flip} 1)`}>
-      <path d="M0 0 Q 4 30 0 70" stroke="#2f5a45" strokeWidth="1" fill="none" />
+      <path d="M0 0 Q 4 30 0 70" stroke="var(--sage-dark)" strokeWidth="1" fill="none" />
       {[10, 22, 34, 46, 58].map((d, i) => (
         <g key={d}>
-          <path d={LEAF} transform={`translate(1 ${d}) rotate(${58}) scale(${0.62 - i * 0.04})`} fill="none" stroke="#2f5a45" strokeWidth="1" />
-          <path d={LEAF} transform={`translate(1 ${d + 5}) rotate(${-58}) scale(${0.62 - i * 0.04})`} fill="none" stroke="#2f5a45" strokeWidth="1" />
+          <path d={LEAF} transform={`translate(1 ${d}) rotate(${58}) scale(${0.62 - i * 0.04})`} fill="none" stroke="var(--sage-dark)" strokeWidth="1" />
+          <path d={LEAF} transform={`translate(1 ${d + 5}) rotate(${-58}) scale(${0.62 - i * 0.04})`} fill="none" stroke="var(--sage-dark)" strokeWidth="1" />
         </g>
       ))}
     </g>
@@ -236,17 +236,17 @@ function MinimalGreenScene() {
     <>
       {sprig(200, 8, 1)}
       <g opacity=".7">
-        <path d="M40 40 H160" stroke="#a8935a" strokeWidth=".8" />
-        <path d="M240 40 H360" stroke="#a8935a" strokeWidth=".8" />
+        <path d="M40 40 H160" stroke="var(--gold)" strokeWidth=".8" />
+        <path d="M240 40 H360" stroke="var(--gold)" strokeWidth=".8" />
       </g>
-      <circle cx="200" cy="92" r="2.4" fill="#a8935a" />
+      <circle cx="200" cy="92" r="2.4" fill="var(--gold)" />
     </>
   );
   const bottom = (
     <g transform="translate(0 260) scale(1 -1)">
       <g opacity=".7">
-        <path d="M40 40 H160" stroke="#a8935a" strokeWidth=".8" />
-        <path d="M240 40 H360" stroke="#a8935a" strokeWidth=".8" />
+        <path d="M40 40 H160" stroke="var(--gold)" strokeWidth=".8" />
+        <path d="M240 40 H360" stroke="var(--gold)" strokeWidth=".8" />
       </g>
       {sprig(200, 8, 1)}
     </g>
@@ -632,6 +632,291 @@ function NoirScene() {
   return { top: <>{corner}{mirror(corner)}{bar}</>, bottom: <>{rot180(corner)}{mirror(rot180(corner))}</> };
 }
 
+
+const GOLD2 = '#e6c36a';
+
+function Lotus({ x, y, s = 1, petal, edge, center = '#f2c14e' }: { x: number; y: number; s?: number; petal: string; edge: string; center?: string }) {
+  const P = 'M0 0 C 9 -6, 12 -22, 0 -36 C -12 -22, -9 -6, 0 0Z';
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {[-78, -56, 56, 78].map((a) => <path key={a} d={P} transform={`rotate(${a}) scale(.85)`} fill={petal} stroke={edge} strokeWidth=".8" opacity=".9" />)}
+      {[-34, 34].map((a) => <path key={a} d={P} transform={`rotate(${a}) scale(.95)`} fill={petal} stroke={edge} strokeWidth=".8" />)}
+      <path d={P} fill={petal} stroke={edge} strokeWidth=".9" />
+      <ellipse cy="-4" rx="5" ry="3" fill={center} opacity=".9" />
+    </g>
+  );
+}
+const Pad = ({ x, y, r = 22, fill = '#8fb58a', edge = '#5f8f5f' }: { x: number; y: number; r?: number; fill?: string; edge?: string }) => (
+  <g transform={`translate(${x} ${y})`}>
+    <ellipse rx={r} ry={r * 0.45} fill={fill} stroke={edge} strokeWidth=".8" />
+    <path d={`M0 0 L${r * 0.9} ${-r * 0.1}`} stroke={edge} strokeWidth=".6" opacity=".7" />
+  </g>
+);
+
+function LotusScene() {
+  const water = (
+    <g fill="none" stroke="#7fb2c4" strokeWidth=".9" opacity=".7">
+      {[0, 1, 2].map((i) => <ellipse key={i} cx="200" cy="250" rx={90 + i * 50} ry={10 + i * 5} />)}
+    </g>
+  );
+  const bottom = (
+    <>
+      {water}
+      <Pad x={60} y={240} r={34} />
+      <Pad x={340} y={246} r={30} />
+      <Pad x={150} y={252} r={22} fill="#a9c9a0" />
+      <Pad x={262} y={250} r={20} fill="#a9c9a0" />
+      <path d="M52 238 Q 56 214 50 196" stroke="#5f8f5f" strokeWidth="1.4" fill="none" />
+      <Lotus x={50} y={198} s={1.15} petal="#f9d4de" edge="#d7869c" />
+      <path d="M338 244 Q 336 218 344 200" stroke="#5f8f5f" strokeWidth="1.4" fill="none" />
+      <Lotus x={344} y={202} s={0.95} petal="#fde7ec" edge="#d7869c" />
+      <Lotus x={150} y={244} s={0.55} petal="#f9d4de" edge="#d7869c" />
+    </>
+  );
+  const hang = (
+    <g>
+      <path d="M30 -4 Q 40 50 24 96" stroke="#5f8f5f" strokeWidth="1.3" fill="none" />
+      <Lotus x={24} y={100} s={0.8} petal="#f9d4de" edge="#d7869c" />
+      <Pad x={80} y={20} r={28} fill="#a9c9a0" />
+      <Pad x={20} y={10} r={20} />
+    </g>
+  );
+  return { top: <>{hang}{mirror(hang)}</>, bottom };
+}
+
+function Twig({ p0, p1, p2, n, c = '#6b4a3a', sw = 2.4 }: { p0: P; p1: P; p2: P; n: number; c?: string; sw?: number }) {
+  return (
+    <Branch p0={p0} p1={p1} p2={p2} n={n} size={0} fill="transparent" stroke={c} sw={sw} tip={false}
+      extra={(pt, a, i) => (
+        <g>
+          <path d={`M${pt[0]} ${pt[1]} l ${Math.cos(((a + (i % 2 ? 60 : -60)) * Math.PI) / 180) * 22} ${Math.sin(((a + (i % 2 ? 60 : -60)) * Math.PI) / 180) * 22}`} stroke={c} strokeWidth="1.4" />
+          <Blossom x={pt[0] + Math.cos(((a + (i % 2 ? 60 : -60)) * Math.PI) / 180) * 22} y={pt[1] + Math.sin(((a + (i % 2 ? 60 : -60)) * Math.PI) / 180) * 22} s={1.1 - i * 0.04} petal={i % 3 ? '#fbe0e6' : '#f5b9c7'} center="#d9788f" r={i * 40} />
+          <Blossom x={pt[0]} y={pt[1]} s={0.8} petal="#fdf0f3" center="#d9788f" r={i * 25} />
+        </g>
+      )} />
+  );
+}
+function CherryScene() {
+  const big = (
+    <g>
+      <Twig p0={[-8, 14]} p1={[110, -10]} p2={[210, 60]} n={5} />
+      <Twig p0={[-6, 60]} p1={[40, 90]} p2={[70, 160]} n={3} sw={2} />
+    </g>
+  );
+  const sm = <Twig p0={[-8, 10]} p1={[70, 0]} p2={[130, 56]} n={3} sw={2} />;
+  return { top: <>{big}{mirror(sm)}</>, bottom: <>{rot180(sm)}{mirror(rot180(big))}</> };
+}
+
+function BaroqueScene() {
+  const G = GOLD2;
+  const corner = (
+    <g fill="none" stroke={G} strokeWidth="1.2" strokeLinecap="round">
+      <path d="M8 120 V10 H120" />
+      <path d="M20 100 V22 H100" opacity=".5" />
+      <path d="M30 30 C 80 24, 96 70, 62 78 C 38 84, 30 58, 50 54 C 62 52, 66 64, 58 66" />
+      <path d="M30 30 C 24 80, 70 96, 78 62 C 84 38, 58 30, 54 50 C 52 62, 64 66, 66 58" opacity=".8" />
+      <Leaf x={100} y={44} r={70} s={0.9} fill={G} op={0.85} />
+      <Leaf x={44} y={100} r={160} s={0.9} fill={G} op={0.85} />
+      <Leaf x={112} y={22} r={90} s={0.6} fill={G} op={0.7} />
+      <circle cx="8" cy="10" r="3.5" fill={G} stroke="none" />
+    </g>
+  );
+  const mid = (
+    <g fill="none" stroke={G} strokeWidth="1.1">
+      <path d="M150 26 C 170 6, 190 6, 200 26 C 210 6, 230 6, 250 26" />
+      <path d="M170 36 H230" />
+      <path d="M200 26 L200 46" />
+      <rect x="195" y="46" width="10" height="10" transform="rotate(45 200 51)" fill={G} stroke="none" />
+    </g>
+  );
+  return { top: <>{corner}{mirror(corner)}{mid}</>, bottom: <>{rot180(corner)}{mirror(rot180(corner))}</> };
+}
+
+function CastleScene() {
+  const castle = (
+    <g transform="translate(200 260)">
+      <path d="M-210 0 Q -120 -40 -40 -10 Q 40 -50 130 -10 Q 190 -30 210 0Z" fill="#a9c1e0" opacity=".6" />
+      <g fill="#dfe8f5" stroke="#6f8fbf" strokeWidth="1">
+        <rect x="-46" y="-92" width="92" height="92" />
+        <rect x="-70" y="-70" width="28" height="70" />
+        <rect x="42" y="-70" width="28" height="70" />
+        <rect x="-18" y="-120" width="36" height="30" />
+      </g>
+      <g fill="#6f8fbf">
+        <path d="M-72 -70 L-56 -98 L-40 -70Z" />
+        <path d="M40 -70 L56 -98 L72 -70Z" />
+        <path d="M-20 -120 L0 -152 L20 -120Z" />
+      </g>
+      <path d="M0 -152 V-170 L14 -164 L0 -158" stroke="#d1a45a" fill="#d1a45a" strokeWidth="1" />
+      <g fill="#6f8fbf">
+        <path d="M-12 0 V-26 a12 12 0 0 1 24 0 V0Z" />
+        {[-30, 30].map((x) => <rect key={x} x={x - 4} y="-64" width="8" height="14" rx="4" />)}
+        {[-56, 56].map((x) => <rect key={x} x={x - 3} y="-46" width="6" height="12" rx="3" />)}
+        <rect x="-4" y="-108" width="8" height="12" rx="4" />
+      </g>
+      {[-44, -30, -16, 2, 16, 30].map((x) => <rect key={x} x={x} y="-100" width="8" height="8" fill="#dfe8f5" stroke="#6f8fbf" strokeWidth=".8" />)}
+    </g>
+  );
+  const cloud = (x: number, y: number, k: number) => (
+    <g fill="#fff" opacity=".85" transform={`translate(${x} ${y}) scale(${k})`}>
+      <ellipse cx="0" cy="0" rx="34" ry="10" />
+      <ellipse cx="-14" cy="-8" rx="16" ry="11" />
+      <ellipse cx="10" cy="-12" rx="20" ry="13" />
+    </g>
+  );
+  const top = (
+    <>
+      {cloud(70, 46, 1)}
+      {cloud(330, 70, 1.2)}
+      {cloud(200, 24, 0.7)}
+      <Sparkle x={120} y={90} s={0.6} fill="#d1a45a" />
+      <Sparkle x={290} y={30} s={0.7} fill="#d1a45a" />
+    </>
+  );
+  return { top, bottom: castle };
+}
+
+function HoangKimScene() {
+  const G = GOLD2;
+  const corner = (
+    <g>
+      <Branch p0={[-6, 20]} p1={[70, 16]} p2={[150, 90]} n={5} size={0.95} fill={G} fill2="#b9923a" stroke={G} sw={1} />
+      <Rose x={62} y={70} s={1.6} base="#ffffff" mid="#f6f1e4" edge="#c9b27a" />
+      <Rose x={132} y={38} s={1} base="#fffaf0" mid="#f6f1e4" edge="#c9b27a" />
+      <Rose x={30} y={140} s={0.75} base="#fffaf0" mid="#f6f1e4" edge="#c9b27a" />
+      <path d="M8 200 V8 H200" fill="none" stroke={G} strokeWidth="1" opacity=".5" />
+    </g>
+  );
+  const small = (
+    <g>
+      <Branch p0={[-6, 10]} p1={[50, 14]} p2={[108, 64]} n={4} size={0.85} fill={G} fill2="#b9923a" stroke={G} sw={1} />
+      <Rose x={46} y={46} s={1.1} base="#fffaf0" mid="#f6f1e4" edge="#c9b27a" />
+    </g>
+  );
+  return { top: <>{corner}{mirror(small)}</>, bottom: <>{rot180(small)}{mirror(rot180(corner))}</> };
+}
+
+function SongHyScene() {
+  const G = GOLD2;
+  const hy = (x: number, y: number, size: number, op = 1, r = 0) => (
+    <text x={x} y={y} fontSize={size} fill={G} opacity={op} textAnchor="middle" fontFamily="'Noto Serif SC','Songti SC','SimSun','Noto Serif CJK SC',serif" transform={`rotate(${r} ${x} ${y})`}>囍</text>
+  );
+  const corner = (
+    <g fill="none" stroke={G} strokeWidth="1.1">
+      <path d="M8 70 V8 H70" />
+      <path d="M18 56 V18 H56" opacity=".55" />
+      <circle cx="34" cy="34" r="6" opacity=".8" />
+      <path d="M8 8 L28 28" opacity=".6" />
+    </g>
+  );
+  const lantern = (x: number) => (
+    <g>
+      <path d={`M${x} -4 V24`} stroke={G} strokeWidth="1" />
+      <ellipse cx={x} cy="42" rx="15" ry="19" fill="#c62a2f" stroke={G} strokeWidth="1" />
+      <path d={`M${x - 7} 24 Q ${x - 14} 42 ${x - 7} 60 M${x + 7} 24 Q ${x + 14} 42 ${x + 7} 60`} stroke={G} strokeWidth=".6" fill="none" opacity=".7" />
+      <rect x={x - 5} y="22" width="10" height="4" fill={G} />
+      <rect x={x - 5} y="58" width="10" height="4" fill={G} />
+      <path d={`M${x} 62 V82`} stroke={G} strokeWidth="1" />
+    </g>
+  );
+  return {
+    top: <>{corner}{mirror(corner)}{lantern(110)}{lantern(290)}{hy(200, 84, 62, 0.95)}</>,
+    bottom: <>{rot180(corner)}{mirror(rot180(corner))}{hy(200, 250, 38, 0.8)}{hy(110, 244, 20, 0.5)}{hy(290, 244, 20, 0.5)}</>,
+  };
+}
+
+function Crane({ x, y, s = 1, flip = 1, r = 0 }: { x: number; y: number; s?: number; flip?: number; r?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s * flip} ${s})`}>
+      <path d="M-6 -4 C 10 -44, 44 -54, 78 -42 C 56 -36, 34 -22, 14 2Z" fill="#fff" stroke="#d9c9a0" strokeWidth=".8" />
+      <path d="M-6 -4 C 0 -30, 22 -44, 44 -48 C 30 -34, 18 -20, 8 0Z" fill="#f0e8d4" opacity=".9" />
+      <path d="M44 -48 C 60 -48, 70 -44, 78 -42" stroke="#2b2b2b" strokeWidth="2" fill="none" />
+      <ellipse cx="2" cy="2" rx="24" ry="8" fill="#fff" stroke="#d9c9a0" strokeWidth=".8" transform="rotate(-12)" />
+      <path d="M-18 -2 C -36 -12, -32 -34, -42 -42" stroke="#fff" strokeWidth="4" fill="none" strokeLinecap="round" />
+      <path d="M-18 -2 C -36 -12, -32 -34, -42 -42" stroke="#d9c9a0" strokeWidth=".6" fill="none" />
+      <circle cx="-43" cy="-43" r="3.4" fill="#fff" stroke="#d9c9a0" strokeWidth=".6" />
+      <circle cx="-44" cy="-46" r="1.8" fill="#c62a2f" />
+      <path d="M-45 -42 L-58 -40" stroke="#c9a24a" strokeWidth="1.4" />
+      <path d="M20 4 L50 14 L26 8Z" fill="#2b2b2b" />
+      <path d="M-2 8 L-4 30 M6 8 L10 30" stroke="#9a7a3a" strokeWidth="1" />
+    </g>
+  );
+}
+function CraneScene() {
+  const G = GOLD2;
+  const swirl = (x: number, y: number, k: number) => (
+    <path d="M0 0 C 14 -14, 34 -4, 28 10 C 24 20, 10 16, 12 8 C 13 3, 20 4, 20 9" fill="none" stroke={G} strokeWidth="1.1" opacity=".75" transform={`translate(${x} ${y}) scale(${k})`} />
+  );
+  return {
+    top: <>{swirl(20, 30, 1.2)}{mirror(swirl(20, 30, 1.2))}{swirl(110, 108, 0.8)}{mirror(swirl(110, 108, 0.8))}<Crane x={118} y={72} s={0.8} r={-8} /><Crane x={282} y={52} s={0.62} flip={-1} r={8} /></>,
+    bottom: <>{swirl(30, 200, 1.4)}{mirror(swirl(30, 200, 1.4))}<Crane x={300} y={214} s={0.7} flip={-1} r={-6} /></>,
+  };
+}
+
+function RivieraScene() {
+  const lemon = (x: number, y: number, s = 1, r = 0) => (
+    <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
+      <ellipse rx="11" ry="8.5" fill="#f5d44a" stroke="#d9a91a" strokeWidth=".8" />
+      <path d="M-11 0 L-14 -1.5 M11 0 L14 1.5" stroke="#d9a91a" strokeWidth="1.6" />
+      <path d="M-5 -3 Q -1 -6 3 -4" stroke="#fff6c2" strokeWidth="1.3" fill="none" />
+    </g>
+  );
+  const br = (
+    <g>
+      <Branch p0={[-6, 14]} p1={[90, 0]} p2={[176, 60]} n={7} size={0.9} fill="#8fae7a" fill2="#6f9a63" stroke="#5f7a4a" extra={(pt, _a, i) => (i % 3 === 1 ? lemon(pt[0], pt[1] + 10, 0.95, i * 20) : null)} />
+      {lemon(176, 66, 1.1, -20)}
+      <Branch p0={[-4, 30]} p1={[26, 80]} p2={[50, 140]} n={4} size={0.8} fill="#a3c08e" fill2="#6f9a63" stroke="#5f7a4a" />
+    </g>
+  );
+  const tiles = (
+    <g>
+      <rect y="228" width="400" height="32" fill="#f4f8fc" />
+      {Array.from({ length: 14 }, (_, i) => (
+        <g key={i} transform={`translate(${14 + i * 28} 244)`}>
+          <rect x="-12" y="-12" width="24" height="24" fill="none" stroke="#3d6fa8" strokeWidth=".9" />
+          <path d="M0 -9 L9 0 L0 9 L-9 0Z" fill="#3d6fa8" opacity={i % 2 ? 0.9 : 0.5} />
+          <circle r="2.4" fill="#f5d44a" />
+        </g>
+      ))}
+      <path d="M0 228 H400" stroke="#3d6fa8" strokeWidth="1.2" />
+    </g>
+  );
+  return { top: <>{br}{mirror(br)}</>, bottom: tiles };
+}
+
+function WildflowerScene() {
+  const daisy = (x: number, y: number, s: number) => <Flower x={x} y={y} s={s} n={10} petal="#ffffff" center="#f2c14e" stroke="#e5d7c4" />;
+  const cosmos = (x: number, y: number, s: number) => <Flower x={x} y={y} s={s} n={6} petal="#f5a3b8" center="#f6d36a" stroke="#d9788f" />;
+  const purple = (x: number, y: number, s: number) => <Flower x={x} y={y} s={s} n={8} petal="#c9b0e6" center="#f6d36a" />;
+  const stem = (x: number, h: number, lean: number, fl: ReactNode) => (
+    <g>
+      <path d={`M${x} 262 Q ${x + lean / 2} ${262 - h * 0.5} ${x + lean} ${262 - h}`} stroke="#6f9a63" strokeWidth="1.3" fill="none" />
+      <Leaf x={x + lean * 0.3} y={262 - h * 0.35} r={-40} s={0.7} fill="#8fae7a" />
+      <Leaf x={x + lean * 0.4} y={262 - h * 0.55} r={50} s={0.6} fill="#a3c08e" />
+      {fl}
+    </g>
+  );
+  const side = (
+    <>
+      {stem(20, 150, 14, daisy(34, 112, 1.3))}
+      {stem(46, 110, -6, cosmos(40, 152, 1.1))}
+      {stem(70, 70, 10, purple(80, 192, 0.9))}
+      {stem(96, 96, -4, daisy(92, 166, 0.9))}
+      {stem(8, 90, 6, cosmos(14, 172, 0.9))}
+    </>
+  );
+  const hang = (
+    <g>
+      <path d="M26 -4 Q 36 40 20 80" stroke="#6f9a63" strokeWidth="1.2" fill="none" />
+      <Leaf x={28} y={30} r={120} s={0.7} fill="#8fae7a" />
+      {cosmos(20, 84, 1)}
+      <path d="M62 -4 Q 70 30 60 56" stroke="#6f9a63" strokeWidth="1.2" fill="none" />
+      {daisy(60, 60, 0.8)}
+    </g>
+  );
+  return { top: <>{hang}{mirror(hang)}</>, bottom: <>{side}{mirror(side)}</> };
+}
+
 const SCENES: Record<SceneKind, () => { top: ReactNode; bottom: ReactNode }> = {
   sage: SageScene,
   'dried-blue': DriedBlueScene,
@@ -649,6 +934,15 @@ const SCENES: Record<SceneKind, () => { top: ReactNode; bottom: ReactNode }> = {
   vintage: VintageScene,
   ocean: OceanScene,
   noir: NoirScene,
+  songhy: SongHyScene,
+  lotus: LotusScene,
+  cherry: CherryScene,
+  baroque: BaroqueScene,
+  castle: CastleScene,
+  hoangkim: HoangKimScene,
+  riviera: RivieraScene,
+  wildflower: WildflowerScene,
+  crane: CraneScene,
 };
 
 /** Top + bottom artwork for the hero (and the footer). Pure decoration → aria-hidden. */
@@ -673,7 +967,7 @@ export function Band() {
       <svg viewBox="0 0 220 24" fill="none">
         <path d="M10 12 H88" stroke={g} strokeWidth=".8" opacity=".7" />
         <path d="M132 12 H210" stroke={g} strokeWidth=".8" opacity=".7" />
-        {(k === 'sage' || k === 'spring' || k === 'forest' || k === 'lavender') && (
+        {(k === 'sage' || k === 'spring' || k === 'forest' || k === 'lavender' || k === 'riviera') && (
           <>
             <Leaf x={100} y={14} r={-60} s={0.45} fill="var(--moss)" />
             <Leaf x={120} y={14} r={60} s={0.45} fill="var(--moss)" />
@@ -693,7 +987,7 @@ export function Band() {
             <rect x="106" y="8" width="8" height="8" transform="rotate(45 110 12)" stroke={s} strokeWidth="1" />
           </>
         )}
-        {(k === 'magnolia' || k === 'rose' || k === 'peony' || k === 'sunflower') && (
+        {(k === 'magnolia' || k === 'rose' || k === 'peony' || k === 'sunflower' || k === 'lotus' || k === 'cherry' || k === 'wildflower') && (
           <>
             {[0, 72, 144, 216, 288].map((a) => (
               <ellipse key={a} cx="110" cy="5" rx="3" ry="5.5" fill="var(--blush)" stroke={s} strokeWidth=".7" transform={`rotate(${a} 110 12)`} />
@@ -701,7 +995,7 @@ export function Band() {
             <circle cx="110" cy="12" r="2" fill={g} />
           </>
         )}
-        {(k === 'navy' || k === 'royal' || k === 'noir' || k === 'ocean') && (
+        {(k === 'navy' || k === 'royal' || k === 'noir' || k === 'ocean' || k === 'songhy' || k === 'baroque' || k === 'hoangkim' || k === 'crane' || k === 'castle') && (
           <>
             <Sparkle x={110} y={12} s={0.95} fill={g} />
             <Sparkle x={94} y={12} s={0.4} fill={g} />

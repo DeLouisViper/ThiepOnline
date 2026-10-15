@@ -55,7 +55,7 @@ function FamilyEditor({ title, f, onChange }: { title: string; f: FamilyInfo; on
 }
 
 function ThemePicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
-  const groups = ['Mẫu gốc', 'Theo mẫu tham khảo', 'Mẫu bổ sung'] as const;
+  const groups = ['Mẫu gốc', 'Theo mẫu tham khảo', 'Mẫu bổ sung', 'Thêm theo chungdoi.com'] as const;
   return (
     <div className="adm-card">
       <h2>Mẫu giao diện</h2>
