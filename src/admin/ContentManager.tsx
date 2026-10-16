@@ -3,6 +3,12 @@ import { BUCKET_MEDIA, publicUrl, supabase } from '../lib/supabase';
 import { processImage, validateImage } from '../lib/image';
 import {
   CONTENT_LIMITS,
+  GALLERY_LAYOUTS,
+  HERO_LAYOUTS,
+  type GalleryLayout,
+  type HeroLayout,
+  type LayoutConfig,
+  type SectionKey,
   DEFAULT_CONTENT,
   deriveEvent,
   mergeContent,
@@ -55,7 +61,7 @@ function FamilyEditor({ title, f, onChange }: { title: string; f: FamilyInfo; on
 }
 
 function ThemePicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
-  const groups = ['Mẫu gốc', 'Theo mẫu tham khảo', 'Mẫu bổ sung', 'Thêm theo chungdoi.com'] as const;
+  const groups = ['Mẫu gốc', 'Theo mẫu tham khảo', 'Mẫu bổ sung', 'Thêm theo chungdoi.com', 'Nền mực nước & lá'] as const;
   return (
     <div className="adm-card">
       <h2>Mẫu giao diện</h2>
@@ -88,6 +94,77 @@ function ThemePicker({ value, onChange }: { value: string; onChange: (id: string
               </div>
             ))}
           </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+const HERO_LABEL: Record<HeroLayout, [string, string]> = {
+  bg: ['Ảnh làm nền', 'Ảnh phủ toàn bộ trang đầu (mờ nhẹ)'],
+  arch: ['Ảnh khung vòm', 'Ảnh trong khung vòm, tên bên dưới'],
+  oval: ['Ảnh khung oval', 'Ảnh hình oval, tên bên dưới'],
+  top: ['Ảnh nửa trên', 'Ảnh lớn phía trên, mờ dần xuống tên'],
+};
+const GALLERY_LABEL: Record<GalleryLayout, [string, string]> = {
+  grid: ['Lưới 2 cột', 'Gọn gàng, đều nhau'],
+  coverflow: ['Xoay 3D (Cover Flow)', 'Ảnh giữa lớn, ảnh hai bên nghiêng — vuốt hoặc bấm mũi tên'],
+  masonry: ['Xếp gạch', 'Giữ nguyên tỉ lệ ảnh gốc'],
+  slider: ['Trượt ngang', 'Vuốt ngang từng ảnh lớn'],
+  mosaic: ['Ghép mảng', 'Ảnh lớn nhỏ xen kẽ như tạp chí'],
+};
+const SECTION_LABEL: Record<SectionKey, string> = {
+  family: 'Hai gia đình',
+  event: 'Ngày trọng đại (đếm ngược, lịch)',
+  map: 'Bản đồ',
+  timeline: 'Lịch trình',
+  gallery: 'Album ảnh',
+  wishes: 'Sổ lời chúc',
+  gift: 'Hộp quà mừng cưới',
+};
+
+function Choice<T extends string>({ value, onChange, labels, options }: { value: T; onChange: (v: T) => void; labels: Record<T, [string, string]>; options: readonly T[] }) {
+  return (
+    <div className="theme-grid" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))' }}>
+      {options.map((o) => (
+        <button key={o} type="button" className={`theme-card${value === o ? ' on' : ''}`} style={{ textAlign: 'left', cursor: 'pointer', font: 'inherit' }} onClick={() => onChange(o)} aria-pressed={value === o}>
+          <div className="theme-name">{value === o ? '✓ ' : ''}{labels[o][0]}</div>
+          <div className="hint">{labels[o][1]}</div>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function LayoutEditor({ value, onChange, hasPhoto }: { value: LayoutConfig; onChange: (l: LayoutConfig) => void; hasPhoto: boolean }) {
+  const move = (i: number, dir: -1 | 1) => {
+    const o = [...value.order];
+    const j = i + dir;
+    if (j < 0 || j >= o.length) return;
+    [o[i], o[j]] = [o[j], o[i]];
+    onChange({ ...value, order: o });
+  };
+  const toggle = (k: SectionKey) =>
+    onChange({ ...value, hidden: value.hidden.includes(k) ? value.hidden.filter((x) => x !== k) : [...value.hidden, k] });
+  return (
+    <div className="adm-card">
+      <h2>Bố cục thiệp</h2>
+      <div className="hint" style={{ marginBottom: 10 }}>Chọn kiểu bố cục rồi bấm <b>Lưu nội dung</b> ở cuối trang. Bố cục dùng được với mọi mẫu giao diện.</div>
+      <h3>Trang đầu {hasPhoto ? '' : '(cần chọn ảnh ở mục “Ảnh nền đầu thiệp” bên trên để thấy khác biệt)'}</h3>
+      <Choice value={value.hero} onChange={(hero) => onChange({ ...value, hero })} labels={HERO_LABEL} options={HERO_LAYOUTS} />
+      <h3>Kiểu album ảnh</h3>
+      <Choice value={value.gallery} onChange={(gallery) => onChange({ ...value, gallery })} labels={GALLERY_LABEL} options={GALLERY_LAYOUTS} />
+      <h3>Thứ tự &amp; ẩn/hiện các phần</h3>
+      <div className="hint" style={{ marginBottom: 8 }}>Dùng ↑ ↓ để đổi thứ tự (vd: đưa Album ảnh lên ngay sau trang đầu). Bỏ tick để ẩn một phần.</div>
+      {value.order.map((k, i) => (
+        <div className="row" key={k} style={{ padding: '6px 0', borderBottom: '1px solid var(--line)' }}>
+          <label className="switch" style={{ flex: 1, minHeight: 36 }}>
+            <input type="checkbox" checked={!value.hidden.includes(k)} onChange={() => toggle(k)} />
+            <span style={{ opacity: value.hidden.includes(k) ? 0.5 : 1 }}>{SECTION_LABEL[k]}</span>
+          </label>
+          <button type="button" className="btn sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Lên">↑</button>
+          <button type="button" className="btn sm" onClick={() => move(i, 1)} disabled={i === value.order.length - 1} aria-label="Xuống">↓</button>
         </div>
       ))}
     </div>
@@ -221,6 +298,8 @@ export function ContentManager() {
           </div>
         </div>
       </div>
+
+      <LayoutEditor value={form.layout} onChange={(l) => set('layout', l)} hasPhoto={Boolean(form.heroImage)} />
 
       <div className="adm-card">
         <h2>Cô dâu & chú rể</h2>

@@ -14,6 +14,32 @@ export interface TimelineItem {
   time: string;
   label: string;
 }
+export const HERO_LAYOUTS = ['bg', 'arch', 'oval', 'top'] as const;
+export type HeroLayout = (typeof HERO_LAYOUTS)[number];
+export const GALLERY_LAYOUTS = ['grid', 'coverflow', 'masonry', 'slider', 'mosaic'] as const;
+export type GalleryLayout = (typeof GALLERY_LAYOUTS)[number];
+export const SECTION_KEYS = ['family', 'event', 'map', 'timeline', 'gallery', 'wishes', 'gift'] as const;
+export type SectionKey = (typeof SECTION_KEYS)[number];
+export interface LayoutConfig {
+  hero: HeroLayout;
+  gallery: GalleryLayout;
+  order: SectionKey[]; // display order of the middle sections
+  hidden: SectionKey[]; // sections switched off
+}
+export const DEFAULT_LAYOUT: LayoutConfig = { hero: 'bg', gallery: 'grid', order: [...SECTION_KEYS], hidden: [] };
+
+export function mergeLayout(raw: unknown): LayoutConfig {
+  const o = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const pick = <T extends string>(v: unknown, all: readonly T[], d: T): T => (typeof v === 'string' && (all as readonly string[]).includes(v) ? (v as T) : d);
+  const keys = (v: unknown): SectionKey[] =>
+    Array.isArray(v) ? [...new Set(v.filter((k): k is SectionKey => (SECTION_KEYS as readonly string[]).includes(k as string)))] : [];
+  const order = keys(o.order);
+  SECTION_KEYS.forEach((k) => {
+    if (!order.includes(k)) order.push(k);
+  });
+  return { hero: pick(o.hero, HERO_LAYOUTS, 'bg'), gallery: pick(o.gallery, GALLERY_LAYOUTS, 'grid'), order, hidden: keys(o.hidden) };
+}
+
 export interface WeddingContent {
   groom: string; // short names (hero, footer)
   bride: string;
@@ -34,6 +60,7 @@ export interface WeddingContent {
   timeline: TimelineItem[];
   thanks: string;
   theme: string; // id from src/lib/themes.ts
+  layout: LayoutConfig;
   heroImage: string; // optional background photo, path inside bucket wedding-media ("bg/…")
 }
 
@@ -76,6 +103,7 @@ export const DEFAULT_CONTENT: WeddingContent = {
   thanks: 'Sự hiện diện của quý khách\nlà niềm vinh hạnh của gia đình chúng tôi!',
   theme: DEFAULT_THEME,
   heroImage: '',
+  layout: DEFAULT_LAYOUT,
 };
 
 export const CONTENT_LIMITS = { short: 80, long: 200, thanks: 400, timeline: 12, url: 500 };
@@ -125,6 +153,7 @@ export function mergeContent(raw: unknown): WeddingContent {
     timeline,
     thanks: str(o.thanks, D.thanks, CONTENT_LIMITS.thanks),
     theme: isThemeId(o.theme) ? o.theme : D.theme,
+    layout: mergeLayout(o.layout),
     heroImage: typeof o.heroImage === 'string' && /^bg\/[A-Za-z0-9._-]{1,100}$/.test(o.heroImage) ? o.heroImage : '',
   };
 }

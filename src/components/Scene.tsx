@@ -917,6 +917,147 @@ function WildflowerScene() {
   return { top: <>{hang}{mirror(hang)}</>, bottom: <>{side}{mirror(side)}</> };
 }
 
+
+/* Watercolour / alcohol-ink marbling: colours come from CSS vars --ink-a/b/c and --vein */
+function InkScene() {
+  const veins = (
+    <g fill="none" stroke="var(--vein)" strokeWidth="1.1" strokeLinecap="round" opacity=".85">
+      <path d="M-10 70 C 60 40, 110 90, 170 40 S 260 10, 300 40" />
+      <path d="M-10 84 C 50 64, 120 106, 180 62" opacity=".6" />
+      <path d="M240 -6 C 270 40, 330 30, 410 70" />
+    </g>
+  );
+  const sprig = (
+    <g>
+      <Branch p0={[420, -8]} p1={[340, 30]} p2={[318, 118]} n={7} size={0.7} fill="#c9d8c8" fill2="#9fb59f" stroke="#7d9482" sw={1} spread={64} />
+      <Branch p0={[395, -6]} p1={[372, 36]} p2={[352, 90]} n={4} size={0.55} fill="#dfe8de" fill2="#b5c7b4" stroke="#8fa592" sw={0.9} spread={64} />
+      <Flower x={338} y={30} s={0.9} n={6} petal="#ffffff" center="#e8e0b8" stroke="#d9e0d4" />
+      <Flower x={372} y={12} s={0.65} n={6} petal="#ffffff" center="#e8e0b8" stroke="#d9e0d4" />
+      {[[310, 120], [322, 128], [300, 108], [330, 100], [346, 112]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.2" fill="#fff" stroke="#c9d3c4" strokeWidth=".6" />)}
+    </g>
+  );
+  const top = (
+    <>
+      <defs>
+        <filter id="ink-f" x="-25%" y="-25%" width="150%" height="150%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="7" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="46" />
+          <feGaussianBlur stdDeviation="2.5" />
+        </filter>
+      </defs>
+      <g filter="url(#ink-f)">
+        <ellipse cx="30" cy="6" rx="150" ry="66" fill="var(--ink-a)" opacity=".8" />
+        <ellipse cx="300" cy="14" rx="120" ry="56" fill="var(--ink-b)" opacity=".6" />
+        <ellipse cx="190" cy="-16" rx="150" ry="40" fill="var(--ink-c)" opacity=".7" />
+        <ellipse cx="60" cy="120" rx="70" ry="40" fill="var(--ink-b)" opacity=".35" />
+      </g>
+      {veins}
+      {sprig}
+    </>
+  );
+  const bottom = (
+    <g transform="translate(0 260) scale(1 -1)">
+      <g filter="url(#ink-f)">
+        <ellipse cx="350" cy="10" rx="150" ry="60" fill="var(--ink-a)" opacity=".75" />
+        <ellipse cx="60" cy="26" rx="130" ry="50" fill="var(--ink-b)" opacity=".55" />
+        <ellipse cx="200" cy="-10" rx="150" ry="36" fill="var(--ink-c)" opacity=".7" />
+      </g>
+      <g fill="none" stroke="var(--vein)" strokeWidth="1.1" strokeLinecap="round" opacity=".85">
+        <path d="M-10 60 C 70 30, 130 70, 200 36 S 330 20, 410 56" />
+        <path d="M120 -6 C 150 30, 220 24, 260 60" opacity=".6" />
+      </g>
+    </g>
+  );
+  return { top, bottom };
+}
+
+function EucBranch({ p0, p1, p2, n = 9, size = 1 }: { p0: P; p1: P; p2: P; n?: number; size?: number }) {
+  const cols = ['#a8bfae', '#8aa893', '#c9d8cb', '#b4c9b8'];
+  const els: ReactNode[] = [];
+  for (let i = 0; i < n; i++) {
+    const t = (i + 0.6) / (n + 0.4);
+    const pt = bez(p0, p1, p2, t);
+    const a = ang(p0, p1, p2, t);
+    const k = size * (1.1 - t * 0.5);
+    [-1, 1].forEach((sd) => {
+      const r = ((a + sd * 62) * Math.PI) / 180;
+      els.push(<ellipse key={`${i}${sd}`} cx={pt[0] + Math.cos(r) * 9 * k} cy={pt[1] + Math.sin(r) * 9 * k} rx={8 * k} ry={9.5 * k} fill={cols[(i + (sd > 0 ? 1 : 0)) % 4]} stroke="#7d9482" strokeWidth=".6" opacity=".95" />);
+    });
+  }
+  return (
+    <g>
+      <path d={`M${p0[0]} ${p0[1]} Q ${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]}`} stroke="#7a6a58" strokeWidth="1.4" fill="none" />
+      {els}
+    </g>
+  );
+}
+function EucalyptusScene() {
+  const set = (
+    <g>
+      <EucBranch p0={[-8, -4]} p1={[120, 0]} p2={[176, 110]} n={10} />
+      <EucBranch p0={[-6, 20]} p1={[30, 80]} p2={[60, 170]} n={7} size={0.85} />
+      <EucBranch p0={[40, -6]} p1={[90, 20]} p2={[130, 56]} n={5} size={0.7} />
+      {[[150, 96], [160, 82], [170, 70], [34, 150]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.4" fill="#e8edf0" stroke="#aab9c4" strokeWidth=".6" />)}
+    </g>
+  );
+  return { top: <>{set}{mirror(set)}</>, bottom: <>{rot180(set)}{mirror(rot180(set))}</> };
+}
+
+function Monstera({ x, y, s = 1, r = 0, fill = '#2f7a55', vein = '#1f5a3d' }: { x: number; y: number; s?: number; r?: number; fill?: string; vein?: string }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
+      <path d="M0 0 C -46 -6, -58 -58, -14 -82 C -6 -86, -2 -82, 0 -74 C 2 -82, 6 -86, 14 -82 C 58 -58, 46 -6, 0 0Z" fill={fill} stroke={vein} strokeWidth="1" />
+      <path d="M0 0 V-74" stroke={vein} strokeWidth="1.2" />
+      {[-1, 1].map((sd) => (
+        <g key={sd} stroke={vein} strokeWidth=".8" fill="none">
+          <path d={`M0 -18 Q ${sd * 22} -22 ${sd * 38} -14`} />
+          <path d={`M0 -36 Q ${sd * 24} -42 ${sd * 42} -34`} />
+          <path d={`M0 -54 Q ${sd * 20} -60 ${sd * 34} -56`} />
+        </g>
+      ))}
+      {[-1, 1].map((sd) => (
+        <g key={`c${sd}`} fill="var(--cream)">
+          <path d={`M${sd * 40} -14 L${sd * 24} -20 L${sd * 42} -26Z`} />
+          <path d={`M${sd * 44} -34 L${sd * 26} -40 L${sd * 46} -48Z`} />
+        </g>
+      ))}
+    </g>
+  );
+}
+function TropicalScene() {
+  const hib = (x: number, y: number, k: number) => <Flower x={x} y={y} s={k} n={5} petal="#ef6f5a" center="#f7d36a" stroke="#c9483a" />;
+  const top = (
+    <>
+      <Monstera x={34} y={110} s={1.25} r={-35} />
+      <Monstera x={110} y={70} s={0.8} r={20} fill="#3f8f64" />
+      <Branch p0={[-6, 40]} p1={[60, 10]} p2={[150, 20]} n={8} size={1} spread={78} fill="#4a9a6a" fill2="#2f7a55" stroke="#1f5a3d" />
+      {hib(120, 26, 1.1)}
+      {mirror(
+        <>
+          <Monstera x={34} y={110} s={1.25} r={-35} />
+          <Branch p0={[-6, 40]} p1={[60, 10]} p2={[150, 20]} n={8} size={1} spread={78} fill="#4a9a6a" fill2="#2f7a55" stroke="#1f5a3d" />
+          {hib(120, 26, 1.1)}
+        </>,
+      )}
+    </>
+  );
+  const bottom = (
+    <>
+      <Monstera x={30} y={260} s={1.1} r={25} />
+      <Branch p0={[-6, 232]} p1={[60, 250]} p2={[150, 232]} n={7} size={0.95} spread={78} fill="#4a9a6a" fill2="#2f7a55" stroke="#1f5a3d" />
+      {hib(110, 238, 0.9)}
+      {mirror(
+        <>
+          <Monstera x={30} y={260} s={1.1} r={25} />
+          <Branch p0={[-6, 232]} p1={[60, 250]} p2={[150, 232]} n={7} size={0.95} spread={78} fill="#4a9a6a" fill2="#2f7a55" stroke="#1f5a3d" />
+          {hib(110, 238, 0.9)}
+        </>,
+      )}
+    </>
+  );
+  return { top, bottom };
+}
+
 const SCENES: Record<SceneKind, () => { top: ReactNode; bottom: ReactNode }> = {
   sage: SageScene,
   'dried-blue': DriedBlueScene,
@@ -943,6 +1084,9 @@ const SCENES: Record<SceneKind, () => { top: ReactNode; bottom: ReactNode }> = {
   riviera: RivieraScene,
   wildflower: WildflowerScene,
   crane: CraneScene,
+  ink: InkScene,
+  eucalyptus: EucalyptusScene,
+  tropical: TropicalScene,
 };
 
 /** Top + bottom artwork for the hero (and the footer). Pure decoration → aria-hidden. */
@@ -967,7 +1111,7 @@ export function Band() {
       <svg viewBox="0 0 220 24" fill="none">
         <path d="M10 12 H88" stroke={g} strokeWidth=".8" opacity=".7" />
         <path d="M132 12 H210" stroke={g} strokeWidth=".8" opacity=".7" />
-        {(k === 'sage' || k === 'spring' || k === 'forest' || k === 'lavender' || k === 'riviera') && (
+        {(k === 'sage' || k === 'spring' || k === 'forest' || k === 'lavender' || k === 'riviera' || k === 'ink' || k === 'eucalyptus') && (
           <>
             <Leaf x={100} y={14} r={-60} s={0.45} fill="var(--moss)" />
             <Leaf x={120} y={14} r={60} s={0.45} fill="var(--moss)" />
@@ -987,7 +1131,7 @@ export function Band() {
             <rect x="106" y="8" width="8" height="8" transform="rotate(45 110 12)" stroke={s} strokeWidth="1" />
           </>
         )}
-        {(k === 'magnolia' || k === 'rose' || k === 'peony' || k === 'sunflower' || k === 'lotus' || k === 'cherry' || k === 'wildflower') && (
+        {(k === 'magnolia' || k === 'rose' || k === 'peony' || k === 'sunflower' || k === 'lotus' || k === 'cherry' || k === 'wildflower' || k === 'tropical') && (
           <>
             {[0, 72, 144, 216, 288].map((a) => (
               <ellipse key={a} cx="110" cy="5" rx="3" ry="5.5" fill="var(--blush)" stroke={s} strokeWidth=".7" transform={`rotate(${a} 110 12)`} />

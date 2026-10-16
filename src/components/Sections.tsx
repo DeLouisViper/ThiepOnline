@@ -10,7 +10,11 @@ export function Hero({ c }: { c: WeddingContent }) {
   const music = useMusic();
   const ev = deriveEvent(c);
   const bg = publicUrl(BUCKET_MEDIA, c.heroImage);
-  const scrollToFamily = () => document.getElementById('family')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToFamily = () => {
+    // first visible section after the hero (the order is editable in admin)
+    const first = document.getElementById('hero')?.nextElementSibling?.nextElementSibling;
+    first?.scrollIntoView({ behavior: 'smooth' });
+  };
   const withMusic = music.available && !music.preferOff;
 
   const open = async (playMusic: boolean) => {
@@ -19,10 +23,14 @@ export function Hero({ c }: { c: WeddingContent }) {
   };
 
   return (
-    <section id="hero">
-      {bg && <div className="hero-photo" style={{ backgroundImage: `url("${bg}")` }} />}
+    <section id="hero" className={bg ? `hl-${c.layout.hero}` : undefined}>
+      {bg && c.layout.hero === 'bg' && <div className="hero-photo" style={{ backgroundImage: `url("${bg}")` }} />}
+      {bg && c.layout.hero === 'top' && <div className="hero-top" style={{ backgroundImage: `url("${bg}")` }} />}
       <Scene part="top" />
       <Scene part="bottom" />
+      {bg && (c.layout.hero === 'arch' || c.layout.hero === 'oval') && (
+        <div className={`hero-frame ${c.layout.hero}`} style={{ backgroundImage: `url("${bg}")` }} role="img" aria-label={`${c.groom} và ${c.bride}`} />
+      )}
       <Reveal immediate className="sub">Trân trọng kính mời</Reveal>
       <Reveal immediate className="names">
         {c.groom}

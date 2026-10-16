@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePublicSettings, useGallery } from '../hooks/usePublicData';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { mergeContent } from '../lib/content';
+import { mergeContent, type SectionKey } from '../lib/content';
 import { DEFAULT_THEME, getTheme, isThemeId } from '../lib/themes';
 import { ThemeCtx } from './ThemeContext';
 import { MusicProvider } from './MusicContext';
@@ -79,6 +79,17 @@ export function Invitation() {
     });
   };
 
+  const render: Record<SectionKey, ReactNode> = {
+    family: <FamilySection c={content} />,
+    event: <EventSection c={content} />,
+    map: <MapSection c={content} />,
+    timeline: <TimelineSection c={content} />,
+    gallery: <GallerySection photos={photos} layout={content.layout.gallery} />,
+    wishes: <WishesSection settings={settings} />,
+    gift: <GiftSection settings={settings} groom={content.groom} bride={content.bride} />,
+  };
+  const sections = content.layout.order.filter((k) => !content.layout.hidden.includes(k));
+
   // Wait for the saved content so guests never see another couple's default names flash by.
   if (isSupabaseConfigured && !loaded) return <div className="card" aria-busy="true" />;
 
@@ -88,20 +99,13 @@ export function Invitation() {
       <Petals on={petalsAllowed && petalsOn} />
       <div className="card">
         <Hero c={content} />
+        {sections.map((k) => (
+          <Fragment key={k}>
+            <Band />
+            {render[k]}
+          </Fragment>
+        ))}
         <Band />
-        <FamilySection c={content} />
-        <Band />
-        <EventSection c={content} />
-        <Band />
-        <MapSection c={content} />
-        <Band />
-        <TimelineSection c={content} />
-        <Band />
-        <GallerySection photos={photos} />
-        <Band />
-        <WishesSection settings={settings} />
-        <Band />
-        <GiftSection settings={settings} groom={content.groom} bride={content.bride} />
         <Footer c={content} />
       </div>
       <FloatingControls petalsAllowed={petalsAllowed} petalsOn={petalsOn} onTogglePetals={toggle} />
